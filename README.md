@@ -15,6 +15,19 @@ A simple app to control your lighting IoT devices
 - {_g} - Param for green color
 - {_b} - Param for blue color
 
+### Examples of command line:
+
+```
+/?script.py?red={_r}&green={_g}&blue={_b}
+```
+
+```
+/?r{_r}&g{_g}b{_b}&
+```
+
+> **Warning**
+> {_color} placeholders are case-sensitive
+
 ### Available values for each color
 
 ```
