@@ -25,7 +25,7 @@ A simple app to control your lighting IoT devices
 /?r{_r}&g{_g}b{_b}&
 ```
 
-> **Warning**
+> **Warning**  
 > {_color} placeholders are case-sensitive
 
 ### Available values for each color
