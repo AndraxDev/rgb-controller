@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RGB controller</string>
+    <string name="btn_close">Zatvoriť</string>
+    <string name="btn_reset">Resetovať</string>
+    <string name="btn_set">Nastaviť</string>
+    <string name="btn_go_back">Vrátiť sa</string>
+    <string name="btn_used_libs">Použité knižnice</string>
+    <string name="btn_privacy">Súkromie</string>
+    <string name="btn_tos">Podmienky použitia</string>
+    <string name="checkbox_animation">Animácia</string>
+    <string name="desc_app_icon">App icon</string>
+    <string name="desc_power">Výkon</string>
+    <string name="field_protocol">Protokol</string>
+    <string name="field_hostname">Hostname/IP</string>
+    <string name="field_port">Port</string>
+    <string name="field_command_line">Príkazový riadok</string>
+    <string name="field_r">Č</string>
+    <string name="field_g">Z</string>
+    <string name="field_b">M</string>
+    <string name="text_debug">[Debug]</string>
+    <string name="text_help">Vložte sem celú cestu s parametrami. &lt;br&gt;Príklad: &lt;font color="#0084ff"&gt;/script.py?red=&lt;/font&gt;&lt;font color="#990000"&gt;{_r}&lt;/font&gt;&lt;font color="#0084ff"&gt;&amp;green=&lt;/font&gt;&lt;font color="#009900"&gt;{_g}&lt;/font&gt;&lt;font color="#0084ff"&gt;&amp;blue=&lt;/font&gt;&lt;font color="#0c39c2"&gt;{_b}&lt;/font&gt;&lt;/font&gt;, where &lt;font color="#ff9900"&gt;{_farba}&lt;/font&gt; je povinný zástupný znak.</string>
+    <string name="text_app_desc">Popis: Jednoduchá aplikácia na ovládanie vašich svetlových IoT zariadení. Táto aplikácia bola testovaná na ESP8266.</string>
+    <string name="text_app_dev">Developer: AndraxDev (Teslasoft)</string>
+    <string name="text_version">Verzia:</string>
+    <string name="title_about">O programe</string>
+    <string name="title_help">Pomoc</string>
+</resources>

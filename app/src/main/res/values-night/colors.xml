@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="accent_700">#AFFC86</color>
+    <color name="accent_500">#8BEE00</color>
+    <color name="accent_200">#7DB300</color>
+    <color name="button">#AFFC86</color>
+    <color name="window_background">#FF212121</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_700</color>
+    <color name="text_title">#FFFFFFFF</color>
+    <color name="ripple">#4DFFFFFF</color>
+</resources>

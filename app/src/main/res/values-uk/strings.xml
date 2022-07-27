@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RGB пульт</string>
+    <string name="btn_close">Закрити</string>
+    <string name="btn_reset">Скинути</string>
+    <string name="btn_set">Підтвердити</string>
+    <string name="btn_go_back">Назад</string>
+    <string name="btn_used_libs">Бібліотеки</string>
+    <string name="btn_privacy">Конфіденційність</string>
+    <string name="btn_tos">Умови використання</string>
+    <string name="checkbox_animation">Анімація</string>
+    <string name="desc_app_icon">Логотип програми</string>
+    <string name="desc_power">Живлення</string>
+    <string name="field_protocol">Протокол</string>
+    <string name="field_hostname">Назва хосту/IP</string>
+    <string name="field_port">Порт</string>
+    <string name="field_command_line">Команда</string>
+    <string name="field_r">Ч</string>
+    <string name="field_g">З</string>
+    <string name="field_b">С</string>
+    <string name="text_debug">[Отладка]</string>
+    <string name="text_help">Вставте сюди повну адресу з параметрами. &lt;br&gt;Приклад: &lt;font color="#0084ff"&gt;/script.py?red=&lt;/font&gt;&lt;font color="#990000"&gt;{_r}&lt;/font&gt;&lt;font color="#0084ff"&gt;&amp;green=&lt;/font&gt;&lt;font color="#009900"&gt;{_g}&lt;/font&gt;&lt;font color="#0084ff"&gt;&amp;blue=&lt;/font&gt;&lt;font color="#0c39c2"&gt;{_b}&lt;/font&gt;&lt;/font&gt;, де &lt;font color="#ff9900"&gt;{_колір}&lt;/font&gt; - обов\'язковий параметр.</string>
+    <string name="text_app_desc">Опис: Проста програма для керування світловими IoT девайсами. Ця програма сумісна з ESP8266.</string>
+    <string name="text_app_dev">Розробник: AndraxDev (Teslasoft)</string>
+    <string name="text_version">Версія:</string>
+    <string name="title_about">Про програму</string>
+    <string name="title_help">Допомога</string>
+</resources>
