@@ -30,7 +30,7 @@ public class AboutActivity extends FragmentActivity {
         setContentView(R.layout.activity_about);
 
         app_icon = findViewById(R.id.app_icon);
-        app_icon.setImageResource(R.mipmap.ic_launcher_round);
+        app_icon.setImageResource(R.drawable.app_icon_round);
 
         btn_used_libs = findViewById(R.id.btn_used_libs);
         btn_privacy = findViewById(R.id.btn_privacy);
