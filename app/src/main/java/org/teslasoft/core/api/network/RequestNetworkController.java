@@ -2,6 +2,8 @@ package org.teslasoft.core.api.network;
 
 import android.annotation.SuppressLint;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -146,13 +148,12 @@ public class RequestNetworkController {
 
             getClient().newCall(req).enqueue(new Callback() {
                 @Override
-                public void onFailure(Call call, final IOException e) {
+                public void onFailure(@NonNull Call call, @NonNull final IOException e) {
                     requestNetwork.getActivity().runOnUiThread(() -> requestListener.onErrorResponse(tag, e.getMessage()));
                 }
 
                 @Override
-                public void onResponse(Call call, final Response response) throws IOException {
-                    assert response.body() != null;
+                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                     final String responseBody = response.body().string().trim();
                     requestNetwork.getActivity().runOnUiThread(() -> requestListener.onResponse(tag, responseBody));
                 }

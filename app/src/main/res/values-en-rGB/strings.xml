@@ -23,6 +23,6 @@
     <string name="text_app_desc">Description: A simple app to control your light IoT devices. This app has been tested on ESP8266.</string>
     <string name="text_app_dev">Developer: AndraxDev (Teslasoft)</string>
     <string name="text_version">Version:</string>
-    <string name="title_about">About</string>
+    <string name="title_about">About app</string>
     <string name="title_help">Help</string>
 </resources>

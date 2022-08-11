@@ -64,18 +64,15 @@ public class PowerOff extends Activity {
 
     public String getCmd(String cmd, @Nullable String _r, @Nullable String _g, @Nullable String _b) {
         if (_r == null || _g == null || _b == null) {
-
             String r_out = cmd.replace("{_r}", r);
             String g_out = r_out.replace("{_g}", g);
-            String b_out = g_out.replace("{_b}", b);
 
-            return b_out;
+            return g_out.replace("{_b}", b);
         } else {
             String r_out = cmd.replace("{_r}", _r);
             String g_out = r_out.replace("{_g}", _g);
-            String b_out = g_out.replace("{_b}", _b);
 
-            return b_out;
+            return g_out.replace("{_b}", _b);
         }
     }
 }

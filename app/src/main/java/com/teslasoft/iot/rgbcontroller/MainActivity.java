@@ -1,650 +1,385 @@
 package com.teslasoft.iot.rgbcontroller;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.Editable;
 import android.text.Html;
-import android.text.TextWatcher;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
-
-import org.teslasoft.core.api.network.RequestNetwork;
-import org.teslasoft.core.api.network.RequestNetworkController;
-
-import top.defaults.colorpicker.ColorPickerView;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.elevation.SurfaceColors;
+
+import com.teslasoft.android.material.switchpreference.SwitchPreference;
+
+import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity {
 
-    public TextInputEditText field_protocol;
-    public TextInputEditText field_hostname;
-    public TextInputEditText field_port;
-    public TextInputEditText field_cmd;
-    public TextInputEditText field_red;
-    public TextInputEditText field_green;
-    public TextInputEditText field_blue;
+    public LinearLayout view_devices;
+    public LinearLayout view_controller;
+    public LinearLayout view_settings;
 
-    public boolean error_protocol =     false;
-    public boolean error_hostname =     false;
-    public boolean error_port =         false;
-    public boolean error_cmd =          false;
-    public boolean error_red =          false;
-    public boolean error_green =        false;
-    public boolean error_blue =         false;
-    public boolean form_error =         false;
+    public BottomNavigationView navigator;
 
-    public Button btn_pick_color;
-    public Button btn_set;
+    public ListView list_dev;
 
-    public FloatingActionButton btn_power;
+    public String did = "0";
 
-    public TextView activity_title;
+    public DevicesAdapter adapter;
 
-    public LinearLayout loading_screen;
-    public LinearLayout disabler;
+    public ArrayList<String> ids = new ArrayList<>();
 
-    public ColorPickerView color_picker;
+    public LinearLayout no_selected;
+    public ImageView app_i;
 
-    public boolean is_loading = false;
+    public ImageView app_icon;
 
-    public boolean is_animating = false;
+    public Button btn_used_libs;
+    public Button btn_privacy;
+    public Button btn_tos;
 
-    public boolean animator = false;
+    public ImageButton activity_back_about;
 
-    public boolean is_powered_on = true;
+    public TextView app_version;
 
-    public CheckBox animation;
+    ColorPickerFragment colorPickerFragment;
 
-    public TextView debug;
+    public class DevicesAdapter extends BaseAdapter {
+        ArrayList<String> _data;
+        Activity context;
 
-    public RequestNetwork api;
-    public RequestNetwork.RequestListener api_listener = new RequestNetwork.RequestListener() {
-        @Override
-        public void onResponse(String tag, String response) {
-            loading_screen.setVisibility(View.GONE);
-            if (!is_animating && is_powered_on) btn_set.setEnabled(true);
+        public FragmentManager fragmentManager;
 
-            is_loading = false;
+        public DevicesAdapter(Activity context, FragmentManager fragmentManager, ArrayList<String> _arr) {
+            _data = _arr;
+            this.context = context;
+            this.fragmentManager = fragmentManager;
         }
 
         @Override
-        public void onErrorResponse(String tag, String message) {
-            loading_screen.setVisibility(View.GONE);
-            if (!is_animating && is_powered_on) btn_set.setEnabled(true);
-
-            Toast.makeText(MainActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
-            is_loading = false;
+        public int getCount() {
+            return _data.size();
         }
-    };
 
+        @Override
+        public String getItem(int _index) {
+            return _data.get(_index);
+        }
+
+        @Override
+        public long getItemId(int _index) {
+            return _index;
+        }
+
+        @SuppressLint("InflateParams")
+        @Override
+        public View getView(final int _position, View _view, ViewGroup _viewGroup) {
+            LayoutInflater _inflater = (LayoutInflater)context.getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View _v = _view;
+
+            if (_v == null) {
+                _v = _inflater.inflate(R.layout.item_device, null);
+            }
+
+            final String protocol;
+            final String hostname;
+            final String port;
+            final String cmd;
+            final String dev_name;
+            final String device_id;
+
+            final TextView name = _v.findViewById(R.id.name);
+            final TextView status = _v.findViewById(R.id.status);
+            final Button edit = _v.findViewById(R.id.edit);
+            final Button remove = _v.findViewById(R.id.remove);
+            final ImageView icon = _v.findViewById(R.id.icon);
+            final ConstraintLayout ui = _v.findViewById(R.id.ui);
+
+            icon.setImageResource(R.drawable.app_icon_round);
+
+            device_id = getItem(_position);
+
+            try {
+                SharedPreferences settings = context.getSharedPreferences("settings_".concat(device_id), Context.MODE_PRIVATE);
+
+                protocol = settings.getString("protocol", null);
+                hostname = settings.getString("hostname", null);
+                port = settings.getString("port", null);
+                cmd = settings.getString("cmd", null);
+                dev_name = settings.getString("name", null);
+
+                name.setText(dev_name);
+
+                initialize(_position, edit, remove, protocol, hostname, port, cmd, dev_name, device_id, name, status, ui);
+            } catch (Exception e) {
+                ui.setVisibility(View.GONE);
+            }
+
+            return _v;
+        }
+
+        public void initialize(int pos, Button edit, Button remove, String protocol, String hostname, String port, String cmd, String dev_name, String device_id, TextView name, TextView status, ConstraintLayout ui) {
+            edit.setOnClickListener(v -> {
+                DeviceFragment deviceFragment = DeviceFragment.newInstance(device_id, protocol, hostname, port, cmd, dev_name);
+
+                deviceFragment.setDeviceChangedListener(name::setText);
+
+                deviceFragment.show(fragmentManager.beginTransaction(), "DeviceDialog");
+            });
+
+            remove.setOnClickListener(v -> {
+                new MaterialAlertDialogBuilder(context)
+                        .setTitle("Confirm")
+                        .setMessage("Do you really want to remove this device?")
+                        .setPositiveButton("Remove", (dialog, which) -> {
+                            SharedPreferences settings = context.getSharedPreferences("settings_".concat(device_id), Context.MODE_PRIVATE);
+                            SharedPreferences.Editor debug_editor = settings.edit();
+                            debug_editor.remove("hostname");
+                            debug_editor.remove("port");
+                            debug_editor.remove("protocol");
+                            debug_editor.remove("cmd");
+
+                            try {
+                                SharedPreferences s = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+                                if (s.getString("selected_device", null).equals(device_id)) {
+                                    SharedPreferences.Editor ed = s.edit();
+                                    ed.remove("selected_device");
+                                    ed.apply();
+                                    did = null;
+                                }
+                            } catch (Exception ignored) {}
+
+                            debug_editor.apply();
+                            ids.remove(pos);
+                            notifyDataSetChanged();
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+
+                        })
+                        .show();
+            });
+
+            ui.setOnClickListener(v -> {
+                colorPickerFragment = ColorPickerFragment.newInstance(Integer.toString(pos + 1));
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+                fragmentTransaction.replace(R.id.view_controller, colorPickerFragment , "ColorPicker");
+                fragmentTransaction.commit();
+
+                navigator.setSelectedItemId(R.id.page_controller);
+
+                did = Integer.toString(pos + 1);
+
+                SharedPreferences settings = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+                SharedPreferences.Editor debug_editor = settings.edit();
+                debug_editor.putString("selected_device", did);
+                debug_editor.apply();
+            });
+        }
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        field_protocol = findViewById(R.id.field_protocol);
-        field_hostname = findViewById(R.id.field_hostname);
-        field_port = findViewById(R.id.field_port);
-        field_cmd = findViewById(R.id.field_cmd);
-        field_red = findViewById(R.id.field_red);
-        field_green = findViewById(R.id.field_green);
-        field_blue = findViewById(R.id.field_blue);
+        app_icon = findViewById(R.id.app_icon);
+        app_icon.setImageResource(R.mipmap.ic_launcher_round);
+
+        btn_used_libs = findViewById(R.id.btn_used_libs);
+        btn_privacy = findViewById(R.id.btn_privacy);
+        btn_tos = findViewById(R.id.btn_tos);
+        app_version = findViewById(R.id.app_version);
+
+        PackageManager manager = this.getPackageManager();
+        try {
+            PackageInfo info = manager.getPackageInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES);
+            app_version.setText(getResources().getString(R.string.text_version).concat(" ").concat(info.versionName));
+        } catch (PackageManager.NameNotFoundException ignored) {
+            app_version.setText(getResources().getString(R.string.text_version).concat(" ").concat("unknown"));
+        }
 
         try {
-            SharedPreferences settings = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
-            field_hostname.setText(settings.getString("hostname", null));
-            field_port.setText(settings.getString("port", null));
-            field_protocol.setText(settings.getString("protocol", null));
-            field_cmd.setText(settings.getString("cmd", null));
-            field_red.setText(settings.getString("red", null));
-            field_green.setText(settings.getString("green", null));
-            field_blue.setText(settings.getString("blue", null));
-        } catch (Exception ignored) {}
-
-        field_protocol.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
-                    error_protocol = true;
-                    field_protocol.setError("Please field this blank!");
-                } else {
-                    error_protocol = false;
-                    field_protocol.setError(null);
-                }
-
-                form_validator();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        field_hostname.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
-                    error_hostname = true;
-                    field_hostname.setError("Please field this blank!");
-                } else {
-                    error_hostname = false;
-                    field_hostname.setError(null);
-                }
-
-                form_validator();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        field_port.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
-                    error_port = true;
-                    field_port.setError("Please field this blank!");
-                } else {
-                    try {
-                        final int i = Integer.parseInt(s.toString().trim());
-
-                        if (i > 65536 || i < 0) {
-                            error_port = true;
-                            field_port.setError("Invalid value!");
-                        } else {
-                            error_port = false;
-                            field_port.setError(null);
-                        }
-                    } catch (Exception e) {
-                        error_port = true;
-                        field_port.setError("Invalid value!");
-                    }
-                }
-
-                form_validator();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        field_cmd.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
-                    error_cmd = true;
-                    field_cmd.setError("Please field this blank!");
-                } else {
-                    if (s.toString().trim().contains("{_r}")  && s.toString().trim().contains("{_g}") && s.toString().trim().contains("{_b}")) {
-                        error_cmd = false;
-                        field_cmd.setError(null);
-                    } else {
-                        error_cmd = true;
-                        field_cmd.setError("CMD does not contain required params");
-                    }
-                }
-
-                form_validator();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        field_red.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
-                    error_red = true;
-                    field_red.setError("Please field this blank!");
-                } else {
-                    try {
-                        final int i = Integer.parseInt(s.toString().trim());
-
-                        if (i > 255 || i < 0) {
-                            error_red = true;
-                            field_red.setError("Invalid value!");
-                        } else {
-                            error_red = false;
-                            field_red.setError(null);
-                        }
-                    } catch (Exception e) {
-                        error_red = true;
-                        field_red.setError("Invalid value!");
-                    }
-                }
-
-                form_validator();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        field_green.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
-                    error_green = true;
-                    field_green.setError("Please field this blank!");
-                } else {
-                    try {
-                        final int i = Integer.parseInt(s.toString().trim());
-
-                        if (i > 255 || i < 0) {
-                            error_green = true;
-                            field_green.setError("Invalid value!");
-                        } else {
-                            error_green = false;
-                            field_green.setError(null);
-                        }
-                    } catch (Exception e) {
-                        error_green = true;
-                        field_green.setError("Invalid value!");
-                    }
-                }
-
-                form_validator();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        field_blue.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
-                    error_blue = true;
-                    field_blue.setError("Please field this blank!");
-                } else {
-                    try {
-                        final int i = Integer.parseInt(s.toString().trim());
-
-                        if (i > 255 || i < 0) {
-                            error_blue = true;
-                            field_blue.setError("Invalid value!");
-                        } else {
-                            error_blue = false;
-                            field_blue.setError(null);
-                        }
-                    } catch (Exception e) {
-                        error_blue = true;
-                        field_blue.setError("Invalid value!");
-                    }
-                }
-
-                form_validator();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        field_cmd.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (field_cmd.getRight() - field_cmd.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        new MaterialAlertDialogBuilder(MainActivity.this)
-                                .setTitle(getResources().getString(R.string.title_help))
-                                .setMessage(Html.fromHtml(getResources().getString(R.string.text_help)))
-                                .setPositiveButton(getResources().getString(R.string.btn_close), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                })
-                                .show();
-
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-
-        btn_pick_color = findViewById(R.id.btn_pick_color);
-        btn_set = findViewById(R.id.btn_set);
-        btn_power = findViewById(R.id.btn_power);
-
-        activity_title = findViewById(R.id.activity_title);
-        debug = findViewById(R.id.debug);
-
-        loading_screen = findViewById(R.id.loading_screen);
-        disabler = findViewById(R.id.disabler);
-
-        loading_screen.setVisibility(View.GONE);
-
-        color_picker = findViewById(R.id.color_picker);
-
-        try {
-            SharedPreferences settings = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
-
-            String xr = settings.getString("red", null);
-            String xg = settings.getString("green", null);
-            String xb = settings.getString("blue", null);
-
-            String color = "FF".concat(String.format("%02X", Integer.parseInt(xr))).concat(String.format("%02X", Integer.parseInt(xg))).concat(String.format("%02X", Integer.parseInt(xb)));
-
-            long c = Long.parseLong(color, 16);
-            color_picker.setInitialColor((int) c);
+            SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
+            did = settings.getString("selected_device", null);
         } catch (Exception e) {
-            color_picker.setInitialColor(0xFF00FFFF);
+            did = "0";
         }
 
-        color_picker.subscribe((color, fromUser) -> {
-            if (!is_loading && !form_error && !is_animating && fromUser) {
-                String r = Integer.toHexString(color).substring(2, 4);
-                String g = Integer.toHexString(color).substring(4, 6);
-                String b = Integer.toHexString(color).substring(6, 8);
+        if (savedInstanceState == null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                int rr = Integer.valueOf(r, 16);
-                int gg = Integer.valueOf(g, 16);
-                int bb = Integer.valueOf(b, 16);
+            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
 
-                field_red.setText(Integer.toString(rr));
-                field_green.setText(Integer.toString(gg));
-                field_blue.setText(Integer.toString(bb));
+            if (did != null) {
+                colorPickerFragment = ColorPickerFragment.newInstance(did);
+                fragmentTransaction.replace(R.id.view_controller, colorPickerFragment , "ColorPicker");
+            }
 
-                btn_set.setEnabled(false);
+            fragmentTransaction.commit();
+        }
 
-                SharedPreferences settings = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("hostname", field_hostname.getText().toString().trim());
-                editor.putString("port", field_port.getText().toString().trim());
-                editor.putString("protocol", field_protocol.getText().toString().trim());
-                editor.putString("cmd", field_cmd.getText().toString().trim());
-                editor.putString("red", field_red.getText().toString().trim());
-                editor.putString("green", field_green.getText().toString().trim());
-                editor.putString("blue", field_blue.getText().toString().trim());
-                editor.apply();
+        int e = 1;
 
-                if (is_powered_on) {
-                    api.startRequestNetwork(RequestNetworkController.GET, field_protocol.getText().toString().trim().concat("://").concat(field_hostname.getText().toString().trim()).concat(":").concat(field_port.getText().toString().trim()).concat(getCmd(field_cmd.getText().toString().trim(), null, null, null)), "A", api_listener);
-                    is_loading = true;
+        while (true) {
+            try {
+                SharedPreferences settings = getSharedPreferences("settings_".concat(Integer.toString(e)), MODE_PRIVATE);
+                if (settings.getString("name", null).equals("")) {
+                    break;
                 }
+                if (settings.getString("hostname", null) != null) {
+                    ids.add(Integer.toString(e));
+                }
+                e++;
+            } catch (Exception exception) {
+                break;
+            }
+        }
+
+        FragmentManager fragmentManager =  getSupportFragmentManager();
+
+        adapter = new DevicesAdapter(this, fragmentManager, ids);
+        list_dev = findViewById(R.id.list_dev);
+        list_dev.setDividerHeight(0);
+        list_dev.setAdapter(adapter);
+
+        no_selected = findViewById(R.id.no_selected);
+        no_selected.setVisibility(View.GONE);
+
+        app_i = findViewById(R.id.app_i);
+        app_i.setImageResource(R.mipmap.ic_launcher_round);
+
+        getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
+
+        view_devices = findViewById(R.id.view_devices);
+        view_controller = findViewById(R.id.view_controller);
+        view_settings = findViewById(R.id.view_settings);
+
+        view_devices.setVisibility(View.VISIBLE);
+        view_controller.setVisibility(View.GONE);
+        view_settings.setVisibility(View.GONE);
+
+        navigator = findViewById(R.id.bottom_navigation);
+
+        navigator.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.page_devices) {
+                view_devices.setVisibility(View.VISIBLE);
+                view_controller.setVisibility(View.GONE);
+                view_settings.setVisibility(View.GONE);
+                view_devices.animate().alpha(1.0f).setDuration(200);
+                view_controller.animate().alpha(0.0f).setDuration(200);
+                view_settings.animate().alpha(0.0f).setDuration(200);
+                return true;
+            } else if (item.getItemId() == R.id.page_controller) {
+                view_devices.setVisibility(View.GONE);
+                view_controller.setVisibility(View.VISIBLE);
+                view_settings.setVisibility(View.GONE);
+                view_devices.animate().alpha(0.0f).setDuration(200);
+                view_controller.animate().alpha(1.0f).setDuration(200);
+                view_settings.animate().alpha(0.0f).setDuration(200);
+
+                if (did == null) {
+                    no_selected.setVisibility(View.VISIBLE);
+                } else {
+                    no_selected.setVisibility(View.GONE);
+                }
+                return true;
+            } else if (item.getItemId() == R.id.page_settings) {
+                view_devices.setVisibility(View.GONE);
+                view_controller.setVisibility(View.GONE);
+                view_settings.setVisibility(View.VISIBLE);
+                view_devices.animate().alpha(0.0f).setDuration(200);
+                view_controller.animate().alpha(0.0f).setDuration(200);
+                view_settings.animate().alpha(1.0f).setDuration(200);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    public void add_device(View v) {
+        DeviceFragment deviceFragment = DeviceFragment.newInstance(Integer.toString(getAvailableDeviceId()), "", "", "", "", "");
+        deviceFragment.show(getSupportFragmentManager().beginTransaction(), "DeviceDialog");
+
+        deviceFragment.setDeviceAddedListener(new DeviceFragment.DeviceAddedListener() {
+            @Override
+            public void onSuccess() {
+                ids.add(Integer.toString(getAvailableDeviceId() - 1));
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailed() {
+
             }
         });
-
-        animation = findViewById(R.id.animation);
-
-        animation.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            is_animating = isChecked;
-            if (isChecked) {
-                btn_set.setEnabled(false);
-                btn_set.setBackgroundResource(R.drawable.btn_disabled);
-            } else {
-                btn_set.setEnabled(true);
-                btn_set.setBackgroundResource(R.drawable.btn_accent);
-            }
-        });
-
-        animate(0, 1024, 512);
-
-        api = new RequestNetwork(this);
-
-        try {
-            SharedPreferences settings = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
-            if (settings.getString("enabled", null).equals("true")) {
-                enable_leds();
-            } else {
-                disable_leds();
-            }
-        } catch (Exception e) {
-            enable_leds();
-        }
     }
 
-    public void animate(int a, int b, int c) {
-        if (a >= 1536) a = 0;
-        if (b >= 1536) b = 0;
-        if (c >= 1536) c = 0;
-        final Handler handler = new Handler();
-        int finalA = a;
-        int finalB = b;
-        int finalC = c;
+    public int getAvailableDeviceId() {
+        int e = 1;
 
-        handler.postDelayed(() -> {
-            animate(finalA + 4, finalB + 4, finalC + 4);
-            String _r = Integer.toString(intToColor(finalA));
-            String _g = Integer.toString(intToColor(finalB));
-            String _b = Integer.toString(intToColor(finalC));
-            debug.setText(_r.concat(" ").concat(_g).concat(" ").concat(_b).concat(" | ").concat(Integer.toString(finalA)));
-            if (is_animating && animator && is_powered_on) {
-                field_red.setText(_r);
-                field_green.setText(_g);
-                field_blue.setText(_b);
-                api.startRequestNetwork(RequestNetworkController.GET, field_protocol.getText().toString().trim().concat("://").concat(field_hostname.getText().toString().trim()).concat(":").concat(field_port.getText().toString().trim()).concat(getCmd(field_cmd.getText().toString().trim(), null, null, null)), "A", api_listener);
-                is_loading = true;
-                String color = "FF".concat(String.format("%02X", Integer.parseInt(field_red.getText().toString().trim()))).concat(String.format("%02X", Integer.parseInt(field_green.getText().toString().trim()))).concat(String.format("%02X", Integer.parseInt(field_blue.getText().toString().trim())));
-                long xc = Long.parseLong(color, 16);
-                color_picker.setInitialColor((int) xc);
-                SharedPreferences settings = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("hostname", field_hostname.getText().toString().trim());
-                editor.putString("port", field_port.getText().toString().trim());
-                editor.putString("protocol", field_protocol.getText().toString().trim());
-                editor.putString("cmd", field_cmd.getText().toString().trim());
-                editor.putString("red", field_red.getText().toString().trim());
-                editor.putString("green", field_green.getText().toString().trim());
-                editor.putString("blue", field_blue.getText().toString().trim());
-                editor.apply();
-            }
-        }, 50);
-    }
-
-    public int intToColor(int i) {
-        if (i >= 0 && i <= 255) return i;
-        if (i >= 256 && i <= 767) return 255;
-        if (i >= 768 && i <= 1023) return 768 - Math.abs(255 - i);
-        else return 0;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        animator = false;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        animator = true;
-    }
-
-    public void form_validator() {
-        if (!is_animating) {
-            if (error_protocol || error_hostname || error_port || error_cmd || error_red || error_green || error_blue) {
-                btn_set.setBackgroundResource(R.drawable.btn_disabled);
-                btn_set.setEnabled(false);
-                form_error = true;
-            } else {
-                btn_set.setBackgroundResource(R.drawable.btn_accent);
-                btn_set.setEnabled(true);
-                form_error = false;
-                String color = "FF".concat(String.format("%02X", Integer.parseInt(field_red.getText().toString().trim()))).concat(String.format("%02X", Integer.parseInt(field_green.getText().toString().trim()))).concat(String.format("%02X", Integer.parseInt(field_blue.getText().toString().trim())));
-
-                long c = Long.parseLong(color, 16);
-                color_picker.setInitialColor((int) c);
+        while (true) {
+            try {
+                SharedPreferences settings = getSharedPreferences("settings_".concat(Integer.toString(e)), MODE_PRIVATE);
+                if (settings.getString("hostname", null).equals("")) {
+                    break;
+                }
+                e++;
+            } catch (Exception exception) {
+                break;
             }
         }
+
+        return e;
     }
 
-    public void run(View v) {
-        if (!form_error && is_powered_on) {
-            SharedPreferences settings = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString("hostname", field_hostname.getText().toString().trim());
-            editor.putString("port", field_port.getText().toString().trim());
-            editor.putString("protocol", field_protocol.getText().toString().trim());
-            editor.putString("cmd", field_cmd.getText().toString().trim());
-            editor.putString("red", field_red.getText().toString().trim());
-            editor.putString("green", field_green.getText().toString().trim());
-            editor.putString("blue", field_blue.getText().toString().trim());
-            editor.apply();
-
-            loading_screen.setVisibility(View.VISIBLE);
-            btn_set.setEnabled(false);
-            is_loading = true;
-
-            api.startRequestNetwork(RequestNetworkController.GET, field_protocol.getText().toString().trim().concat("://").concat(field_hostname.getText().toString().trim()).concat(":").concat(field_port.getText().toString().trim()).concat(getCmd(field_cmd.getText().toString().trim(), null, null, null)), "A", api_listener);
-            is_loading = true;
-        }
+    public void open_used_libs(View v) {
+        new MaterialAlertDialogBuilder(MainActivity.this)
+                .setTitle("Used libs")
+                .setMessage(Html.fromHtml("- Android SDK<br>- AndroidX<br>- com.github.duanhong169.colorpicker<br>- OKHTTPP3<br>- Android Material<br>- AndroixX constraintlayout"))
+                .setPositiveButton(getResources().getString(R.string.btn_close), (dialog, which) -> {})
+                .show();
     }
 
-    public String getCmd(String cmd, @Nullable String _r, @Nullable String _g, @Nullable String _b) {
-        if (_r == null || _g == null || _b == null) {
-            String r = field_red.getText().toString().trim();
-            String g = field_green.getText().toString().trim();
-            String b = field_blue.getText().toString().trim();
-
-            String r_out = cmd.replace("{_r}", r);
-            String g_out = r_out.replace("{_g}", g);
-            String b_out = g_out.replace("{_b}", b);
-
-            return b_out;
-        } else {
-            String r_out = cmd.replace("{_r}", _r);
-            String g_out = r_out.replace("{_g}", _g);
-            String b_out = g_out.replace("{_b}", _b);
-
-            return b_out;
-        }
+    public void open_privacy(View v) {
+        Intent intent = new Intent();
+        intent.setData(Uri.parse("https://teslasoft.org/rgb-controller/privacy.html"));
+        intent.setAction(Intent.ACTION_VIEW);
+        startActivity(intent);
     }
 
-    public void reset(View v) {
-        unfocus(null);
-        field_red.setText("0");
-        field_green.setText("255");
-        field_blue.setText("255");
-        color_picker.setInitialColor(0xFF00FFFF);
+    public void open_tos(View v) {
+        Intent intent = new Intent();
+        intent.setData(Uri.parse("https://teslasoft.org/rgb-controller/tos.html"));
+        intent.setAction(Intent.ACTION_VIEW);
+        startActivity(intent);
     }
 
-    public void toggle(View v) {
-        if (is_powered_on) {
-            disable_leds();
-
-            if (!form_error) {
-                api.startRequestNetwork(RequestNetworkController.GET, field_protocol.getText().toString().trim().concat("://").concat(field_hostname.getText().toString().trim()).concat(":").concat(field_port.getText().toString().trim()).concat(getCmd(field_cmd.getText().toString().trim(), "0", "0", "0")), "A", api_listener);
-                is_loading = true;
-            }
-
-            SharedPreferences settings = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString("enabled", "false");
-            editor.apply();
-        } else {
-            enable_leds();
-
-            if (!form_error) {
-                api.startRequestNetwork(RequestNetworkController.GET, field_protocol.getText().toString().trim().concat("://").concat(field_hostname.getText().toString().trim()).concat(":").concat(field_port.getText().toString().trim()).concat(getCmd(field_cmd.getText().toString().trim(), null, null, null)), "A", api_listener);
-                is_loading = true;
-            }
-
-            SharedPreferences settings = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString("enabled", "true");
-            editor.apply();
-        }
-    }
-
-    public void enable_leds() {
-        is_powered_on = true;
-        btn_power.setBackgroundTintList(AppCompatResources.getColorStateList(this, R.color.light_green));
-
-        field_protocol.setEnabled(true);
-        field_hostname.setEnabled(true);
-        field_port.setEnabled(true);
-        field_cmd.setEnabled(true);
-        field_red.setEnabled(true);
-        field_green.setEnabled(true);
-        field_blue.setEnabled(true);
-
-        btn_pick_color.setEnabled(true);
-        btn_set.setEnabled(true);
-
-        animation.setEnabled(true);
-
-        color_picker.setEnabled(true);
-
-        disabler.setVisibility(View.GONE);
-    }
-
-    public void disable_leds() {
-        is_powered_on = false;
-        btn_power.setBackgroundTintList(AppCompatResources.getColorStateList(this, R.color.light_red));
-
-        field_protocol.setEnabled(false);
-        field_hostname.setEnabled(false);
-        field_port.setEnabled(false);
-        field_cmd.setEnabled(false);
-        field_red.setEnabled(false);
-        field_green.setEnabled(false);
-        field_blue.setEnabled(false);
-
-        btn_pick_color.setEnabled(false);
-        btn_set.setEnabled(false);
-
-        animation.setEnabled(false);
-
-        color_picker.setEnabled(false);
-
-        disabler.setVisibility(View.VISIBLE);
-    }
-
-    public void unfocus(View v) {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    public void about(View v) {
-        startActivity(new Intent(this, AboutActivity.class));
-    }
+    public void ignored(View v) {}
 }

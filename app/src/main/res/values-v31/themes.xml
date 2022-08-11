@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.RGBController" parent="Theme.Material3.Light.NoActionBar">
-        <item name="colorPrimary">@color/accent_500</item>
-        <item name="colorPrimaryVariant">@color/accent_700</item>
+        <item name="colorPrimary">@color/accent_900</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/accent_200</item>
-        <item name="colorSecondaryVariant">@color/accent_700</item>
+        <item name="colorSecondary">@color/accent_900</item>
         <item name="colorOnSecondary">@color/black</item>
-        <item name="colorAccent">@color/accent_700</item>
+        <item name="colorAccent">@color/accent_900</item>
         <item name="android:statusBarColor">@color/window_background</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/window_background</item>
@@ -18,7 +16,7 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/shadow</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="colorAccent">@color/accent_700</item>
+        <item name="colorAccent">@color/accent_900</item>
         <item name="colorPrimaryDark">@color/window_background</item>
         <item name="colorPrimary">@color/window_background</item>
         <item name="android:statusBarColor">@color/shadow</item>
