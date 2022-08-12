@@ -4,15 +4,15 @@
         android:id="@+id/page_devices"
         android:enabled="true"
         android:icon="@drawable/ic_list"
-        android:title="Devices"/>
+        android:title="@string/title_devices"/>
     <item
         android:id="@+id/page_controller"
         android:enabled="true"
         android:icon="@drawable/ic_controller"
-        android:title="Controller"/>
+        android:title="@string/text_controller"/>
     <item
         android:id="@+id/page_settings"
         android:enabled="true"
         android:icon="@drawable/ic_about"
-        android:title="About"/>
+        android:title="@string/title_about"/>
 </menu>

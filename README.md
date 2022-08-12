@@ -2,6 +2,10 @@
 
 A simple app to control your lighting IoT devices
 
+### Screenshots
+
+<img src="https://teslasoft.org/rgb-controller/1.png" width="300"/> <img src="https://teslasoft.org/rgb-controller/2.png" width="300"/> <img src="https://teslasoft.org/rgb-controller/3.png" width="300"/> 
+
 ### Tested devices:
 - ESP8266
 

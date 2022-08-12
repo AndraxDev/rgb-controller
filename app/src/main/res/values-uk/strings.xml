@@ -25,4 +25,13 @@
     <string name="text_version">Версія:</string>
     <string name="title_about">Про програму</string>
     <string name="title_help">Допомога</string>
+    <string name="text_device_name">Назва пристрою</string>
+    <string name="text_offline">Offline</string>
+    <string name="text_add_device">Додати пристрій</string>
+    <string name="title_devices">Пристроі</string>
+    <string name="title_no_devices_selected">Пристрій не обрано</string>
+    <string name="text_connecting">Завантаження...</string>
+    <string name="text_edit">Редагувати</string>
+    <string name="text_no_devices_selected">Выберіть пристрій з розділу \'Пристроі\'</string>
+    <string name="text_controller">Пульт</string>
 </resources>

@@ -14,6 +14,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,11 @@ import com.google.android.material.elevation.SurfaceColors;
 
 import com.teslasoft.android.material.switchpreference.SwitchPreference;
 
+import org.teslasoft.core.api.network.RequestNetwork;
+import org.teslasoft.core.api.network.RequestNetworkController;
+
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainActivity extends FragmentActivity {
 
@@ -139,6 +144,15 @@ public class MainActivity extends FragmentActivity {
             return _v;
         }
 
+        public void check(String protocol, String hostname, String port, RequestNetwork availability_api, RequestNetwork.RequestListener availability_api_listener) {
+
+            final Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                availability_api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port), "A", availability_api_listener);
+                check(protocol, hostname, port, availability_api, availability_api_listener);
+            }, 3000);
+        }
+
         public void initialize(int pos, Button edit, Button remove, String protocol, String hostname, String port, String cmd, String dev_name, String device_id, TextView name, TextView status, ConstraintLayout ui) {
             edit.setOnClickListener(v -> {
                 DeviceFragment deviceFragment = DeviceFragment.newInstance(device_id, protocol, hostname, port, cmd, dev_name);
@@ -198,8 +212,25 @@ public class MainActivity extends FragmentActivity {
                 debug_editor.putString("selected_device", did);
                 debug_editor.apply();
             });
-        }
 
+            final RequestNetwork availability_api = new RequestNetwork(context);
+
+            final RequestNetwork.RequestListener availability_api_listener = new RequestNetwork.RequestListener() {
+                @Override
+                public void onResponse(String tag, String response) {
+                    status.setText("Online");
+                    status.setTextColor(getResources().getColor(R.color.success));
+                }
+
+                @Override
+                public void onErrorResponse(String tag, String message) {
+                    status.setText("Offline");
+                    status.setTextColor(getResources().getColor(R.color.error));
+                }
+            };
+
+            check(protocol, hostname, port, availability_api, availability_api_listener);
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

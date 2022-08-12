@@ -341,11 +341,12 @@ public class ColorPickerFragment extends Fragment {
         if (a >= 1536) a = 0;
         if (b >= 1536) b = 0;
         if (c >= 1536) c = 0;
-        final Handler handler = new Handler();
+
         int finalA = a;
         int finalB = b;
         int finalC = c;
 
+        final Handler handler = new Handler();
         handler.postDelayed(() -> {
             animate(finalA + 4, finalB + 4, finalC + 4);
             String _r = Integer.toString(intToColor(finalA));

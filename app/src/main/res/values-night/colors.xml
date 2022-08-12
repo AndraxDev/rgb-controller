@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="accent_900">#AFFC86</color>
-    <color name="accent_500">#8BEE00</color>
-    <color name="accent_100">#7DB300</color>
+    <color name="accent_900">#D7FFC2</color>
+    <color name="accent_500">#467800</color>
+    <color name="accent_100">#2F4300</color>
     <color name="icon_background">@color/accent_100</color>
     <color name="icon_foreground">@color/accent_900</color>
     <color name="bottom_navbar">@color/accent_900</color>
-    <color name="button">#AFFC86</color>
+    <color name="button">@color/accent_900</color>
     <color name="window_background">#FF212121</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
     <color name="text_title">#FFFFFFFF</color>

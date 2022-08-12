@@ -25,4 +25,13 @@
     <string name="text_version">Version:</string>
     <string name="title_about">About app</string>
     <string name="title_help">Help</string>
+    <string name="text_device_name">Device name</string>
+    <string name="text_offline">Offline</string>
+    <string name="text_add_device">Add a device</string>
+    <string name="title_devices">Devices</string>
+    <string name="title_no_devices_selected">No devices selected</string>
+    <string name="text_connecting">Connecting...</string>
+    <string name="text_edit">Edit</string>
+    <string name="text_no_devices_selected">Please select a device from \'Devices\' tab</string>
+    <string name="text_controller">Controller</string>
 </resources>
