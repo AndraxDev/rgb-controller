@@ -10,7 +10,7 @@ android {
         minSdk 28
         targetSdk 32
         versionCode 201
-        versionName "2.0.1"
+        versionName "2.0.2"
     }
 
     buildTypes {
@@ -26,12 +26,12 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.7.0-alpha03'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'com.google.android.material:material:1.7.0-beta01'
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
-    /* @Deprecated */
     implementation 'com.github.duanhong169:colorpicker:1.1.6'
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'com.github.svenoaks:MasterSwitchPreference:0.9.1'

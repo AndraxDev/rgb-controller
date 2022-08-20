@@ -64,6 +64,15 @@
             android:launchMode="singleTask" />
 
         <activity
+            android:name=".TeslasoftIDAuth"
+            android:exported="true"
+            android:theme="@style/Theme.Transparent"
+            android:icon="@drawable/teslasoft_services_icon"
+            android:label="Teslasoft Core"
+            android:windowSoftInputMode="stateHidden"
+            android:launchMode="singleTask" />
+
+        <activity
             android:name=".UpdateRequiredActivity"
             android:exported="true"
             android:theme="@style/Theme.Transparent"

@@ -125,6 +125,8 @@ public class ColorPickerFragment extends Fragment {
         loading_screen = view.findViewById(R.id.loading_screen);
         disabler = view.findViewById(R.id.disabler);
 
+        disabler.setOnClickListener(v -> {});
+
         loading_screen.setVisibility(View.GONE);
 
         color_picker = view.findViewById(R.id.color_picker);

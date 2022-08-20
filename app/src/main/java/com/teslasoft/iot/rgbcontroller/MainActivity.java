@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,18 +28,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.elevation.SurfaceColors;
 
-import com.teslasoft.android.material.switchpreference.SwitchPreference;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.teslasoft.core.api.network.RequestNetwork;
 import org.teslasoft.core.api.network.RequestNetworkController;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class MainActivity extends FragmentActivity {
 
@@ -64,11 +72,44 @@ public class MainActivity extends FragmentActivity {
     public Button btn_privacy;
     public Button btn_tos;
 
-    public ImageButton activity_back_about;
-
     public TextView app_version;
 
     ColorPickerFragment colorPickerFragment;
+
+    public ImageView account_icon;
+    public TextView account_name;
+    public TextView account_email;
+    public int MODE = 0;
+
+    RequestNetwork.RequestListener account_listener = new RequestNetwork.RequestListener() {
+        @Override
+        public void onResponse(String tag, String response) {
+            try {
+                Gson gson = new Gson();
+                Type r = new TypeToken<UserModel>() {
+                }.getType();
+                UserModel sr = gson.fromJson(response, r);
+
+                account_name.setText(sr.getUser_name());
+                account_email.setText(sr.getUser_email());
+            } catch (Exception e) {
+                SharedPreferences account_settings = getSharedPreferences("account", MODE_PRIVATE);
+                SharedPreferences.Editor edit = account_settings.edit();
+                edit.remove("account_id");
+                edit.remove("signature");
+                edit.apply();
+
+                account_icon.setImageResource(R.drawable.ic_account_circle);
+                account_name.setText("Turn on sync");
+                account_email.setText("Sign in with Teslasoft ID");
+            }
+        }
+
+        @Override
+        public void onErrorResponse(String tag, String message) {
+            Toast.makeText(MainActivity.this, "Failed to get account info", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     public class DevicesAdapter extends BaseAdapter {
         ArrayList<String> _data;
@@ -238,6 +279,7 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
 
         app_icon = findViewById(R.id.app_icon);
         app_icon.setImageResource(R.mipmap.ic_launcher_round);
@@ -246,6 +288,29 @@ public class MainActivity extends FragmentActivity {
         btn_privacy = findViewById(R.id.btn_privacy);
         btn_tos = findViewById(R.id.btn_tos);
         app_version = findViewById(R.id.app_version);
+
+        account_icon = findViewById(R.id.account_icon);
+        account_name = findViewById(R.id.account_name);
+        account_email = findViewById(R.id.account_email);
+        account_icon.setImageResource(R.drawable.ic_account_circle);
+
+        SharedPreferences account_settings = getSharedPreferences("account", MODE_PRIVATE);
+
+        try {
+            String auid = account_settings.getString("account_id", null);
+            String sig = account_settings.getString("signature", null);
+            if (!auid.equals("")) {
+                account_name.setText("Loading...");
+                account_email.setText("");
+
+                RequestNetwork ar = new RequestNetwork(this);
+                ar.startRequestNetwork(RequestNetworkController.GET, "https://id.teslasoft.org/xauth/GetAccountInfo.php?sig=".concat(sig).concat("&uid=").concat(auid), "A", account_listener);
+
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners((int) convertDpToPixel(22, MainActivity.this)));
+                Glide.with(getApplicationContext()).load(Uri.parse("https://id.teslasoft.org/xauth/users/".concat(auid).concat(".png"))).apply(requestOptions).into(account_icon);
+            }
+        } catch (Exception ignored) {}
 
         PackageManager manager = this.getPackageManager();
         try {
@@ -306,8 +371,6 @@ public class MainActivity extends FragmentActivity {
         app_i = findViewById(R.id.app_i);
         app_i.setImageResource(R.mipmap.ic_launcher_round);
 
-        getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
-
         view_devices = findViewById(R.id.view_devices);
         view_controller = findViewById(R.id.view_controller);
         view_settings = findViewById(R.id.view_settings);
@@ -352,6 +415,60 @@ public class MainActivity extends FragmentActivity {
             }
             return false;
         });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (MODE == 1) {
+            if (resultCode >= 20) {
+                try {
+                    String sig = data.getStringExtra("signature");
+                    String uid = data.getStringExtra("account_id");
+
+                    SharedPreferences account_settings = getSharedPreferences("account", MODE_PRIVATE);
+                    SharedPreferences.Editor edit = account_settings.edit();
+                    edit.putString("account_id", uid);
+                    edit.putString("signature", sig);
+                    edit.apply();
+
+                    account_name.setText("Loading...");
+                    account_email.setText("");
+
+                    RequestOptions requestOptions = new RequestOptions();
+                    requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners((int) convertDpToPixel(22, MainActivity.this)));
+                    Glide.with(getApplicationContext()).load(Uri.parse("https://id.teslasoft.org/xauth/users/".concat(uid).concat(".png"))).apply(requestOptions).into(account_icon);
+
+                    RequestNetwork ar = new RequestNetwork(this);
+                    ar.startRequestNetwork(RequestNetworkController.GET, "https://id.teslasoft.org/xauth/GetAccountInfo.php?sig=".concat(sig).concat("&uid=").concat(uid), "A", account_listener);
+                } catch (Exception e) {
+                    new MaterialAlertDialogBuilder(this)
+                            .setTitle("Account manager")
+                            .setMessage("Failed to sign in")
+                            .setCancelable(false)
+                            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            })
+                            .show();
+                }
+            } else if (resultCode == 3) {
+                try {
+                    SharedPreferences account_settings = getSharedPreferences("account", MODE_PRIVATE);
+                    SharedPreferences.Editor edit = account_settings.edit();
+                    edit.remove("account_id");
+                    edit.remove("signature");
+                    edit.apply();
+                } catch (Exception ignored) {
+                }
+
+                account_icon.setImageResource(R.drawable.ic_account_circle);
+                account_name.setText("Turn on sync");
+                account_email.setText("Sign in with Teslasoft ID");
+            }
+            MODE = 0;
+        }
+    }
+
+    public static float convertDpToPixel(float dp, Context context){
+        return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
     public void add_device(View v) {
@@ -413,4 +530,19 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void ignored(View v) {}
+
+    public void sync(View v) {
+        try {
+            MODE = 1;
+            Intent api_intent = new Intent(this, TeslasoftIDAuth.class);
+            startActivityForResult(api_intent, 1);
+        } catch (Exception e) {
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Teslasoft Core")
+                    .setMessage("This feature requires one or more Teslasoft services that are not currently available on your device.")
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {})
+                    .show();
+        }
+    }
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="accent_900">#D7FFC2</color>
-    <color name="accent_500">#467800</color>
-    <color name="accent_100">#2F4300</color>
+    <color name="accent_100">#302e39</color>
+    <color name="accent_500">#BD88FA</color>
+    <color name="accent_900">#CAB3E8</color>
     <color name="icon_background">@color/accent_100</color>
     <color name="icon_foreground">@color/accent_900</color>
     <color name="bottom_navbar">@color/accent_900</color>
     <color name="button">@color/accent_900</color>
-    <color name="window_background">#FF212121</color>
+    <color name="window_background">#1b1a21</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
     <color name="text_title">#FFFFFFFF</color>
     <color name="ripple">#4DFFFFFF</color>
