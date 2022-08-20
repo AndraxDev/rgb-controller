@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="accent_100">#e1def1</color>
-    <color name="accent_500">#310f62</color>
-    <color name="accent_900">#1c0041</color>
+    <color name="accent_100">#e0dbff</color>
+    <color name="accent_500">#7462ab</color>
+    <color name="accent_900">#453374</color>
     <color name="fab">@color/accent_100</color>
     <color name="icon_background">@color/accent_100</color>
     <color name="icon_foreground">@color/accent_900</color>
