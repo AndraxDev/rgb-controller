@@ -1,5 +1,6 @@
 package com.teslasoft.iot.rgbcontroller;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -74,12 +75,13 @@ public class MainActivity extends FragmentActivity {
 
     public TextView app_version;
 
-    ColorPickerFragment colorPickerFragment;
+    public ColorPickerFragment colorPickerFragment;
 
     public ImageView account_icon;
     public TextView account_name;
     public TextView account_email;
     public int MODE = 0;
+    public int SELECTED_TAB = 1;
 
     RequestNetwork.RequestListener account_listener = new RequestNetwork.RequestListener() {
         @Override
@@ -274,10 +276,14 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    public Bundle savedInstanceState;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.savedInstanceState = savedInstanceState;
         setContentView(R.layout.activity_main);
         getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
 
@@ -383,6 +389,7 @@ public class MainActivity extends FragmentActivity {
 
         navigator.setOnNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.page_devices) {
+                SELECTED_TAB = 1;
                 view_devices.setVisibility(View.VISIBLE);
                 view_controller.setVisibility(View.GONE);
                 view_settings.setVisibility(View.GONE);
@@ -391,6 +398,7 @@ public class MainActivity extends FragmentActivity {
                 view_settings.animate().alpha(0.0f).setDuration(200);
                 return true;
             } else if (item.getItemId() == R.id.page_controller) {
+                SELECTED_TAB = 2;
                 view_devices.setVisibility(View.GONE);
                 view_controller.setVisibility(View.VISIBLE);
                 view_settings.setVisibility(View.GONE);
@@ -405,6 +413,7 @@ public class MainActivity extends FragmentActivity {
                 }
                 return true;
             } else if (item.getItemId() == R.id.page_settings) {
+                SELECTED_TAB = 3;
                 view_devices.setVisibility(View.GONE);
                 view_controller.setVisibility(View.GONE);
                 view_settings.setVisibility(View.VISIBLE);
@@ -415,6 +424,28 @@ public class MainActivity extends FragmentActivity {
             }
             return false;
         });
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getInt("tab") == 1) {
+                navigator.setSelectedItemId(R.id.page_devices);
+            } else if (savedInstanceState.getInt("tab") == 2) {
+                navigator.setSelectedItemId(R.id.page_controller);
+            } else if (savedInstanceState.getInt("tab") == 3) {
+                navigator.setSelectedItemId(R.id.page_settings);
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("tab", SELECTED_TAB);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        SELECTED_TAB = savedInstanceState.getInt("tab");
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

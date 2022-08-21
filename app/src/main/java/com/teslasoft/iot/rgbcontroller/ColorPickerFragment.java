@@ -92,7 +92,7 @@ public class ColorPickerFragment extends Fragment {
         public void onErrorResponse(String tag, String message) {
             loading_screen.setVisibility(View.GONE);
 
-            Toast.makeText(context, "Failed to connect", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(context, "Failed to connect", Toast.LENGTH_SHORT).show();
             is_loading = false;
         }
     };

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="accent_100">#e0dbff</color>
+    <color name="accent_200">#c4c5d0</color>
     <color name="accent_500">#7462ab</color>
     <color name="accent_900">#453374</color>
     <color name="fab">@color/accent_100</color>
