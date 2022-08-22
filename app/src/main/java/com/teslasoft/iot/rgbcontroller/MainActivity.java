@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -389,22 +391,126 @@ public class MainActivity extends FragmentActivity {
 
         navigator.setOnNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.page_devices) {
+                if (SELECTED_TAB == 2) {
+                    view_controller.setVisibility(View.VISIBLE);
+                    view_controller.setAlpha(1);
+                    view_controller.animate()
+                            .setDuration(150)
+                            .alpha(0)
+                            .setListener(
+                                    new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            view_devices.setVisibility(View.VISIBLE);
+                                            view_devices.setAlpha(0);
+                                            view_devices.animate()
+                                                    .setDuration(150)
+                                                    .alpha(1)
+                                                    .setListener(
+                                                            new AnimatorListenerAdapter() {
+                                                                @Override
+                                                                public void onAnimationEnd(Animator animation) {
+                                                                    view_devices.setVisibility(View.VISIBLE);
+                                                                    view_controller.setVisibility(View.GONE);
+                                                                    view_settings.setVisibility(View.GONE);
+                                                                }
+                                                            }
+                                                    ).start();
+                                        }
+                                    }
+                            ).start();
+                } else if (SELECTED_TAB == 3) {
+                    view_settings.setVisibility(View.VISIBLE);
+                    view_settings.setAlpha(1);
+                    view_settings.animate()
+                            .setDuration(150)
+                            .alpha(0)
+                            .setListener(
+                                    new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            view_devices.setVisibility(View.VISIBLE);
+                                            view_devices.setAlpha(0);
+                                            view_devices.animate()
+                                                    .setDuration(150)
+                                                    .alpha(1)
+                                                    .setListener(
+                                                            new AnimatorListenerAdapter() {
+                                                                @Override
+                                                                public void onAnimationEnd(Animator animation) {
+                                                                    view_devices.setVisibility(View.VISIBLE);
+                                                                    view_controller.setVisibility(View.GONE);
+                                                                    view_settings.setVisibility(View.GONE);
+                                                                }
+                                                            }
+                                                    ).start();
+                                        }
+                                    }
+                            ).start();
+                }
+
                 SELECTED_TAB = 1;
-                view_devices.setVisibility(View.VISIBLE);
-                view_controller.setVisibility(View.GONE);
-                view_settings.setVisibility(View.GONE);
-                view_devices.animate().alpha(1.0f).setDuration(200);
-                view_controller.animate().alpha(0.0f).setDuration(200);
-                view_settings.animate().alpha(0.0f).setDuration(200);
                 return true;
             } else if (item.getItemId() == R.id.page_controller) {
+                if (SELECTED_TAB == 1) {
+                    view_devices.setVisibility(View.VISIBLE);
+                    view_devices.setAlpha(1);
+                    view_devices.animate()
+                            .setDuration(150)
+                            .alpha(0)
+                            .setListener(
+                                    new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            view_controller.setVisibility(View.VISIBLE);
+                                            view_controller.setAlpha(0);
+                                            view_controller.animate()
+                                                    .setDuration(150)
+                                                    .alpha(1)
+                                                    .setListener(
+                                                            new AnimatorListenerAdapter() {
+                                                                @Override
+                                                                public void onAnimationEnd(Animator animation) {
+                                                                    view_devices.setVisibility(View.GONE);
+                                                                    view_controller.setVisibility(View.VISIBLE);
+                                                                    view_settings.setVisibility(View.GONE);
+                                                                }
+                                                            }
+                                                    ).start();
+                                        }
+                                    }
+                            ).start();
+                } else if (SELECTED_TAB == 3) {
+                    view_settings.setVisibility(View.VISIBLE);
+                    view_settings.setAlpha(1);
+                    view_settings.animate()
+                            .setDuration(150)
+                            .alpha(0)
+                            .setListener(
+                                    new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            view_controller.setVisibility(View.VISIBLE);
+                                            view_controller.setAlpha(0);
+                                            view_controller.animate()
+                                                    .setDuration(150)
+                                                    .alpha(1)
+                                                    .setListener(
+                                                            new AnimatorListenerAdapter() {
+                                                                @Override
+                                                                public void onAnimationEnd(Animator animation) {
+                                                                    view_devices.setVisibility(View.GONE);
+                                                                    view_controller.setVisibility(View.VISIBLE);
+                                                                    view_settings.setVisibility(View.GONE);
+                                                                }
+                                                            }
+                                                    ).start();
+                                        }
+                                    }
+                            ).start();
+                }
+
                 SELECTED_TAB = 2;
-                view_devices.setVisibility(View.GONE);
-                view_controller.setVisibility(View.VISIBLE);
-                view_settings.setVisibility(View.GONE);
-                view_devices.animate().alpha(0.0f).setDuration(200);
-                view_controller.animate().alpha(1.0f).setDuration(200);
-                view_settings.animate().alpha(0.0f).setDuration(200);
 
                 if (did == null) {
                     no_selected.setVisibility(View.VISIBLE);
@@ -413,13 +519,65 @@ public class MainActivity extends FragmentActivity {
                 }
                 return true;
             } else if (item.getItemId() == R.id.page_settings) {
+                if (SELECTED_TAB == 1) {
+                    view_devices.setVisibility(View.VISIBLE);
+                    view_devices.setAlpha(1);
+                    view_devices.animate()
+                            .setDuration(150)
+                            .alpha(0)
+                            .setListener(
+                                    new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            view_settings.setVisibility(View.VISIBLE);
+                                            view_settings.setAlpha(0);
+                                            view_settings.animate()
+                                                    .setDuration(150)
+                                                    .alpha(1)
+                                                    .setListener(
+                                                            new AnimatorListenerAdapter() {
+                                                                @Override
+                                                                public void onAnimationEnd(Animator animation) {
+                                                                    view_devices.setVisibility(View.GONE);
+                                                                    view_controller.setVisibility(View.GONE);
+                                                                    view_settings.setVisibility(View.VISIBLE);
+                                                                }
+                                                            }
+                                                    ).start();
+                                        }
+                                    }
+                            ).start();
+                } else if (SELECTED_TAB == 2) {
+                    view_controller.setVisibility(View.VISIBLE);
+                    view_controller.setAlpha(1);
+                    view_controller.animate()
+                            .setDuration(150)
+                            .alpha(0)
+                            .setListener(
+                                    new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            view_settings.setVisibility(View.VISIBLE);
+                                            view_settings.setAlpha(0);
+                                            view_settings.animate()
+                                                    .setDuration(150)
+                                                    .alpha(1)
+                                                    .setListener(
+                                                            new AnimatorListenerAdapter() {
+                                                                @Override
+                                                                public void onAnimationEnd(Animator animation) {
+                                                                    view_devices.setVisibility(View.GONE);
+                                                                    view_controller.setVisibility(View.GONE);
+                                                                    view_settings.setVisibility(View.VISIBLE);
+                                                                }
+                                                            }
+                                                    ).start();
+                                        }
+                                    }
+                            ).start();
+                }
+
                 SELECTED_TAB = 3;
-                view_devices.setVisibility(View.GONE);
-                view_controller.setVisibility(View.GONE);
-                view_settings.setVisibility(View.VISIBLE);
-                view_devices.animate().alpha(0.0f).setDuration(200);
-                view_controller.animate().alpha(0.0f).setDuration(200);
-                view_settings.animate().alpha(1.0f).setDuration(200);
                 return true;
             }
             return false;
@@ -428,10 +586,19 @@ public class MainActivity extends FragmentActivity {
         if (savedInstanceState != null) {
             if (savedInstanceState.getInt("tab") == 1) {
                 navigator.setSelectedItemId(R.id.page_devices);
+                view_devices.setVisibility(View.VISIBLE);
+                view_controller.setVisibility(View.GONE);
+                view_settings.setVisibility(View.GONE);
             } else if (savedInstanceState.getInt("tab") == 2) {
                 navigator.setSelectedItemId(R.id.page_controller);
+                view_devices.setVisibility(View.GONE);
+                view_controller.setVisibility(View.VISIBLE);
+                view_settings.setVisibility(View.GONE);
             } else if (savedInstanceState.getInt("tab") == 3) {
                 navigator.setSelectedItemId(R.id.page_settings);
+                view_devices.setVisibility(View.GONE);
+                view_controller.setVisibility(View.GONE);
+                view_settings.setVisibility(View.VISIBLE);
             }
         }
     }
