@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -54,17 +55,19 @@ public class DeviceFragment extends DialogFragment {
 
     private Context context;
 
-    public TextInputEditText field_protocol;
-    public TextInputEditText field_hostname;
-    public TextInputEditText field_port;
-    public TextInputEditText field_cmd;
-    public TextInputEditText field_name;
+    private TextView dialog_title;
 
-    public boolean error_protocol =     true;
-    public boolean error_hostname =     true;
-    public boolean error_port =         true;
-    public boolean error_cmd =          true;
-    public boolean error_name =         true;
+    private TextInputEditText field_protocol;
+    private TextInputEditText field_hostname;
+    private TextInputEditText field_port;
+    private TextInputEditText field_cmd;
+    private TextInputEditText field_name;
+
+    private boolean error_protocol =     true;
+    private boolean error_hostname =     true;
+    private boolean error_port =         true;
+    private boolean error_cmd =          true;
+    private boolean error_name =         true;
 
     public static String TAG = "DeviceDialog";
 
@@ -95,6 +98,18 @@ public class DeviceFragment extends DialogFragment {
         field_port = view.findViewById(R.id.field_port);
         field_cmd = view.findViewById(R.id.field_cmd);
         field_name = view.findViewById(R.id.field_name);
+
+        dialog_title = view.findViewById(R.id.dialog_title);
+
+        try {
+            if (getArguments().getString("hostname").equals("")) {
+                dialog_title.setText(R.string.text_add_device);
+            } else {
+                dialog_title.setText(R.string.text_edit_device_info);
+            }
+        } catch (Exception e) {
+            dialog_title.setText(R.string.text_add_device);
+        }
 
         field_protocol.setText(getArguments().getString("protocol"));
         field_hostname.setText(getArguments().getString("hostname"));

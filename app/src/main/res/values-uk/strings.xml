@@ -34,4 +34,5 @@
     <string name="text_edit">Редагувати</string>
     <string name="text_no_devices_selected">Выберіть пристрій з розділу \'Пристроі\'</string>
     <string name="text_controller">Пульт</string>
+    <string name="text_edit_device_info">Edit device info</string>
 </resources>

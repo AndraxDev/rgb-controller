@@ -34,4 +34,5 @@
     <string name="title_no_devices_selected">No devices selected</string>
     <string name="text_connecting">Connecting...</string>
     <string name="text_controller">Controller</string>
+    <string name="text_edit_device_info">Edit device info</string>
 </resources>
