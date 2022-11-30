@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -56,20 +57,20 @@ public class RequestNetworkController {
 
             try {
                 @SuppressLint("CustomX509TrustManager") final TrustManager[] trustAllCerts = new TrustManager[]{
-                        new X509TrustManager() {
-                            @SuppressLint("TrustAllX509TrustManager")
-                            @Override
-                            public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {}
+                    new X509TrustManager() {
+                        @SuppressLint("TrustAllX509TrustManager")
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {}
 
-                            @SuppressLint("TrustAllX509TrustManager")
-                            @Override
-                            public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {}
+                        @SuppressLint("TrustAllX509TrustManager")
+                        @Override
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {}
 
-                            @Override
-                            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                                return new java.security.cert.X509Certificate[]{};
-                            }
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
                         }
+                    }
                 };
 
                 final SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -135,7 +136,9 @@ public class RequestNetworkController {
                     reqBuilder.url(url).headers(headerBuilder.build()).method(method, reqBody);
                 }
             } else {
-                RequestBody reqBody = RequestBody.create(okhttp3.MediaType.parse("application/json"), new Gson().toJson(requestNetwork.getParams()));
+                // RequestBody reqBody = RequestBody.create(okhttp3.MediaType.parse("application/json"), new Gson().toJson(requestNetwork.getParams()));
+
+                RequestBody reqBody = RequestBody.create((new Gson().toJson(requestNetwork.getParams())).getBytes(StandardCharsets.UTF_8));
 
                 if (method.equals(GET)) {
                     reqBuilder.url(url).headers(headerBuilder.build()).get();

@@ -160,6 +160,7 @@ public class MainActivity extends FragmentActivity {
             final String cmd;
             final String dev_name;
             final String device_id;
+            final String getter;
 
             final TextView name = _v.findViewById(R.id.name);
             final TextView status = _v.findViewById(R.id.status);
@@ -180,10 +181,11 @@ public class MainActivity extends FragmentActivity {
                 port = settings.getString("port", null);
                 cmd = settings.getString("cmd", null);
                 dev_name = settings.getString("name", null);
+                getter = settings.getString("getter", null);
 
                 name.setText(dev_name);
 
-                initialize(_position, edit, remove, protocol, hostname, port, cmd, dev_name, device_id, name, status, ui);
+                initialize(_position, edit, remove, protocol, hostname, port, cmd, dev_name, device_id, getter, name, status, ui);
             } catch (Exception e) {
                 ui.setVisibility(View.GONE);
             }
@@ -192,7 +194,6 @@ public class MainActivity extends FragmentActivity {
         }
 
         public void check(String protocol, String hostname, String port, RequestNetwork availability_api, RequestNetwork.RequestListener availability_api_listener) {
-
             final Handler handler = new Handler();
             handler.postDelayed(() -> {
                 availability_api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port), "A", availability_api_listener);
@@ -200,9 +201,9 @@ public class MainActivity extends FragmentActivity {
             }, 3000);
         }
 
-        public void initialize(int pos, Button edit, Button remove, String protocol, String hostname, String port, String cmd, String dev_name, String device_id, TextView name, TextView status, ConstraintLayout ui) {
+        public void initialize(int pos, Button edit, Button remove, String protocol, String hostname, String port, String cmd, String dev_name, String device_id, String getter, TextView name, TextView status, ConstraintLayout ui) {
             edit.setOnClickListener(v -> {
-                DeviceFragment deviceFragment = DeviceFragment.newInstance(device_id, protocol, hostname, port, cmd, dev_name);
+                DeviceFragment deviceFragment = DeviceFragment.newInstance(device_id, protocol, hostname, port, cmd, dev_name, getter);
 
                 deviceFragment.setDeviceChangedListener(name::setText);
 
@@ -220,6 +221,7 @@ public class MainActivity extends FragmentActivity {
                             debug_editor.remove("port");
                             debug_editor.remove("protocol");
                             debug_editor.remove("cmd");
+                            debug_editor.remove("getter");
 
                             try {
                                 SharedPreferences s = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -338,17 +340,17 @@ public class MainActivity extends FragmentActivity {
         }
 
         if (savedInstanceState == null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-
-            if (did != null) {
-                colorPickerFragment = ColorPickerFragment.newInstance(did);
-                fragmentTransaction.replace(R.id.view_controller, colorPickerFragment , "ColorPicker");
-            }
-
-            fragmentTransaction.commit();
+//            FragmentManager fragmentManager = getSupportFragmentManager();
+//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//
+//            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+//
+//            if (did != null) {
+//                colorPickerFragment = ColorPickerFragment.newInstance(did);
+//                fragmentTransaction.replace(R.id.view_controller, colorPickerFragment , "ColorPicker");
+//            }
+//
+//            fragmentTransaction.commit();
         }
 
         int e = 1;
@@ -695,7 +697,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void add_device(View v) {
-        DeviceFragment deviceFragment = DeviceFragment.newInstance(Integer.toString(getAvailableDeviceId()), "", "", "", "", "");
+        DeviceFragment deviceFragment = DeviceFragment.newInstance(Integer.toString(getAvailableDeviceId()), "", "", "", "", "", "");
         deviceFragment.show(getSupportFragmentManager().beginTransaction(), "DeviceDialog");
 
         deviceFragment.setDeviceAddedListener(new DeviceFragment.DeviceAddedListener() {
