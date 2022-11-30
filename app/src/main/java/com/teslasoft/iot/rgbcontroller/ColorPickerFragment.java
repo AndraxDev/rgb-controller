@@ -1,5 +1,6 @@
 package com.teslasoft.iot.rgbcontroller;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,11 +23,14 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.teslasoft.android.material.switchpreference.SwitchPreference;
 
 import org.teslasoft.core.api.network.RequestNetwork;
 import org.teslasoft.core.api.network.RequestNetworkController;
 
+import java.lang.reflect.Type;
 import java.util.Objects;
 
 import top.defaults.colorpicker.ColorPickerView;
@@ -38,6 +42,10 @@ public class ColorPickerFragment extends Fragment {
     private String port;
     private String protocol;
     private String cmd;
+    private String getter;
+    private String red;
+    private String green;
+    private String blue;
 
     private TextView activity_title;
 
@@ -50,6 +58,42 @@ public class ColorPickerFragment extends Fragment {
         f.setArguments(args);
         return f;
     }
+
+    private RequestNetwork sync_provider;
+    private RequestNetwork.RequestListener sync_listener = new RequestNetwork.RequestListener() {
+        @Override
+        public void onResponse(String tag, String response) {
+            Gson gson = new Gson();
+
+            try {
+                Type r = new TypeToken<Color>() {
+                }.getType();
+                Color sr = gson.fromJson(response, r);
+
+                red = sr.getRed();
+                green = sr.getGreen();
+                blue = sr.getBlue();
+
+                field_red.setText(red);
+                field_green.setText(green);
+                field_blue.setText(blue);
+
+                SharedPreferences settings = context.getSharedPreferences("settings_".concat(DEVICE_ID), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("red", red);
+                editor.putString("green", green);
+                editor.putString("blue", blue);
+                editor.apply();
+            } catch (Exception e) {
+                Toast.makeText(requireActivity(), "Failed to sync data between IoT server and controller: Invalid server response.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onErrorResponse(String tag, String message) {
+            Toast.makeText(requireActivity(), "Failed to sync data between IoT server and controller: No connection.", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private Context context;
 
@@ -101,6 +145,7 @@ public class ColorPickerFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this.getActivity();
+        assert getArguments() != null;
         DEVICE_ID = getArguments().getString("device_id");
     }
 
@@ -113,6 +158,8 @@ public class ColorPickerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        sync_provider = new RequestNetwork(requireActivity());
 
         field_red = view.findViewById(R.id.field_red);
         field_green = view.findViewById(R.id.field_green);
@@ -138,14 +185,18 @@ public class ColorPickerFragment extends Fragment {
             port = settings.getString("port", null);
             protocol = settings.getString("protocol", null);
             cmd = settings.getString("cmd", null);
+            getter = settings.getString("getter", null);
             field_red.setText(settings.getString("red", null));
             field_green.setText(settings.getString("green", null));
             field_blue.setText(settings.getString("blue", null));
             activity_title.setText(settings.getString("name", null));
+
             initialize();
         } catch (Exception ignored) {
-            btn_power.setVisibility(View.GONE);
-            ui.setVisibility(View.GONE);
+            if (ui != null && btn_power != null) {
+                btn_power.setVisibility(View.GONE);
+                ui.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -158,6 +209,7 @@ public class ColorPickerFragment extends Fragment {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     public void post_initialize() {
         try {
             SharedPreferences settings = context.getSharedPreferences("settings_".concat(DEVICE_ID), Context.MODE_PRIVATE);
@@ -170,6 +222,8 @@ public class ColorPickerFragment extends Fragment {
 
             long c = Long.parseLong(color, 16);
             color_picker.setInitialColor((int) c);
+
+            sync_provider.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getter), "A", sync_listener);
         } catch (Exception e) {
             color_picker.setInitialColor(0xFF00FFFF);
         }

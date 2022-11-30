@@ -26,6 +26,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.teslasoft.android.material.switchpreference.SwitchPreference;
 
+import org.teslasoft.core.api.network.RequestNetwork;
+
 import java.util.Objects;
 
 public class DeviceFragment extends DialogFragment {
@@ -38,7 +40,7 @@ public class DeviceFragment extends DialogFragment {
         this.alistener = null;
     }
 
-    public static DeviceFragment newInstance(String device_id, String protocol, String hostname, String port, String command, String name) {
+    public static DeviceFragment newInstance(String device_id, String protocol, String hostname, String port, String command, String name, String getter) {
         DeviceFragment deviceFragment = new DeviceFragment();
 
         Bundle args = new Bundle();
@@ -48,6 +50,7 @@ public class DeviceFragment extends DialogFragment {
         args.putString("port", port);
         args.putString("command", command);
         args.putString("name", name);
+        args.putString("getter", getter);
         deviceFragment.setArguments(args);
 
         return deviceFragment;
@@ -62,6 +65,7 @@ public class DeviceFragment extends DialogFragment {
     private TextInputEditText field_port;
     private TextInputEditText field_cmd;
     private TextInputEditText field_name;
+    private TextInputEditText field_getter;
 
     private boolean error_protocol =     true;
     private boolean error_hostname =     true;
@@ -98,8 +102,11 @@ public class DeviceFragment extends DialogFragment {
         field_port = view.findViewById(R.id.field_port);
         field_cmd = view.findViewById(R.id.field_cmd);
         field_name = view.findViewById(R.id.field_name);
+        field_getter = view.findViewById(R.id.field_getter);
 
         dialog_title = view.findViewById(R.id.dialog_title);
+
+
 
         try {
             if (getArguments().getString("hostname").equals("")) {
@@ -111,17 +118,19 @@ public class DeviceFragment extends DialogFragment {
             dialog_title.setText(R.string.text_add_device);
         }
 
+        assert getArguments() != null;
         field_protocol.setText(getArguments().getString("protocol"));
         field_hostname.setText(getArguments().getString("hostname"));
         field_port.setText(getArguments().getString("port"));
         field_cmd.setText(getArguments().getString("command"));
         field_name.setText(getArguments().getString("name"));
+        field_getter.setText(getArguments().getString("getter"));
 
-        error_protocol = field_protocol.getText().toString().trim().equals("");
-        error_hostname = field_hostname.getText().toString().trim().equals("");
-        error_port = field_port.getText().toString().trim().equals("");
-        error_cmd = field_cmd.getText().toString().trim().equals("");
-        error_name = field_name.getText().toString().trim().equals("");
+        error_protocol = Objects.requireNonNull(field_protocol.getText()).toString().trim().equals("");
+        error_hostname = Objects.requireNonNull(field_hostname.getText()).toString().trim().equals("");
+        error_port = Objects.requireNonNull(field_port.getText()).toString().trim().equals("");
+        error_cmd = Objects.requireNonNull(field_cmd.getText()).toString().trim().equals("");
+        error_name = Objects.requireNonNull(field_name.getText()).toString().trim().equals("");
 
         field_protocol.addTextChangedListener(new TextWatcher() {
             @Override
@@ -276,16 +285,19 @@ public class DeviceFragment extends DialogFragment {
     public void form_validator() {
         if (error_protocol || error_hostname || error_port || error_cmd || error_name) {
             Toast.makeText(context, "Form error", Toast.LENGTH_SHORT).show();
-            DeviceFragment deviceFragment = DeviceFragment.newInstance(getArguments().getString("device_id"), Objects.requireNonNull(field_protocol.getText()).toString(), Objects.requireNonNull(field_hostname.getText()).toString(), Objects.requireNonNull(field_port.getText()).toString(), Objects.requireNonNull(field_cmd.getText()).toString(), Objects.requireNonNull(field_name.getText()).toString());
+            assert getArguments() != null;
+            DeviceFragment deviceFragment = DeviceFragment.newInstance(getArguments().getString("device_id"), Objects.requireNonNull(field_protocol.getText()).toString(), Objects.requireNonNull(field_hostname.getText()).toString(), Objects.requireNonNull(field_port.getText()).toString(), Objects.requireNonNull(field_cmd.getText()).toString(), Objects.requireNonNull(field_name.getText()).toString(), Objects.requireNonNull(field_getter.getText()).toString());
             deviceFragment.show(requireActivity().getSupportFragmentManager().beginTransaction(), "DeviceDialog");
         } else {
             Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+            assert getArguments() != null;
             SharedPreferences debug_settings = context.getSharedPreferences("settings_".concat(getArguments().getString("device_id")), Context.MODE_PRIVATE);
             SharedPreferences.Editor debug_editor = debug_settings.edit();
-            debug_editor.putString("hostname", field_hostname.getText().toString());
-            debug_editor.putString("port", field_port.getText().toString());
-            debug_editor.putString("protocol", field_protocol.getText().toString());
-            debug_editor.putString("cmd", field_cmd.getText().toString());
+            debug_editor.putString("hostname", Objects.requireNonNull(field_hostname.getText()).toString());
+            debug_editor.putString("port", Objects.requireNonNull(field_port.getText()).toString());
+            debug_editor.putString("protocol", Objects.requireNonNull(field_protocol.getText()).toString());
+            debug_editor.putString("cmd", Objects.requireNonNull(field_cmd.getText()).toString());
+            debug_editor.putString("getter", Objects.requireNonNull(field_getter.getText()).toString());
             debug_editor.putString("red", "0");
             debug_editor.putString("green", "0");
             debug_editor.putString("blue", "0");

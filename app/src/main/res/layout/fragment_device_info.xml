@@ -48,8 +48,8 @@
                 android:id="@+id/field_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/button"
                 android:inputType="text"
+                android:backgroundTint="@color/button"
                 android:textColor="@color/accent_900"
                 android:textColorHighlight="@color/accent_100"
                 android:textColorHint="@color/accent_500"
@@ -180,6 +180,45 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/button"
                 android:drawableEnd="@drawable/ic_help"
+                android:inputType="text"
+                android:textColor="@color/accent_900"
+                android:textColorHighlight="@color/accent_100"
+                android:textColorHint="@color/accent_500"
+                app:backgroundTint="@color/button" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/getter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_fields_group">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Sync provider address"
+            android:textColor="@color/accent_900"
+            android:textColorHint="@color/accent_500"
+            app:boxStrokeColor="@color/button"
+            app:boxStrokeErrorColor="@color/error">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/field_getter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/button"
                 android:inputType="text"
                 android:textColor="@color/accent_900"
                 android:textColorHighlight="@color/accent_100"
