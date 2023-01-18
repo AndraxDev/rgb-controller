@@ -32,7 +32,19 @@
     <string name="title_devices">Devices</string>
     <string name="text_no_devices_selected">Please select a device from \'Devices\' tab</string>
     <string name="title_no_devices_selected">No devices selected</string>
-    <string name="text_connecting">Connecting...</string>
+    <string name="text_connecting">Connecting…</string>
+    <string name="text_loading">Loading…</string>
     <string name="text_controller">Controller</string>
     <string name="text_edit_device_info">Edit device info</string>
+    <string name="required_field">Please fill this blank!</string>
+    <string name="invalid_value">Invalid value!</string>
+    <string name="cmd_missing_params">CMD does not contain required params</string>
+    <string name="widget_sync_title">Turn on sync</string>
+    <string name="widget_sync_description">Sign in with Teslasoft ID</string>
+    <string name="account_manager">Account manager</string>
+    <string name="auth_failed">Failed to sign in.</string>
+    <string name="device_add_failed">Failed to save device info</string>
+    <string name="teslasoft_core">Teslasoft Core</string>
+    <string name="teslasoft_core_error">This feature requires one or more Teslasoft services that are not currently available on your device.</string>
+    <string name="title_used_libs">Used libs</string>
 </resources>

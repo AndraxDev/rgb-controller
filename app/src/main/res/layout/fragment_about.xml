@@ -24,7 +24,7 @@
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_accent"
-            android:onClick="open_used_libs"
+            android:onClick="openUsedLibs"
             android:text="@string/btn_used_libs"
             android:textColor="@color/window_background" />
 
@@ -36,7 +36,7 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_accent"
-            android:onClick="open_privacy"
+            android:onClick="openPrivacy"
             android:text="@string/btn_privacy"
             android:textColor="@color/window_background" />
 
@@ -194,7 +194,7 @@
         android:layout_marginTop="16dp"
         android:layout_weight="1"
         android:background="@drawable/btn_accent"
-        android:onClick="open_tos"
+        android:onClick="openTos"
         android:text="@string/btn_tos"
         android:textColor="@color/window_background"
         app:layout_constraintEnd_toEndOf="parent"
