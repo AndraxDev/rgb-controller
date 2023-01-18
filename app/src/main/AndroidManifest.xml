@@ -5,6 +5,8 @@
 
     <dist:module dist:instant="true" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="org.teslasoft.core.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="org.teslasoft.core.permission.ACCESS_CORE"/>
 
     <queries>
         <intent>
@@ -38,23 +40,7 @@
         </activity>
 
         <activity
-            android:name=".nfc.PowerOn"
-            android:launchMode="singleTask"
-            android:theme="@style/Theme.Transparent"
-            android:windowSoftInputMode="stateHidden"
-            android:exported="true">
-        </activity>
-
-        <activity
-            android:name=".nfc.PowerOff"
-            android:launchMode="singleTask"
-            android:theme="@style/Theme.Transparent"
-            android:windowSoftInputMode="stateHidden"
-            android:exported="true">
-        </activity>
-
-        <activity
-            android:name="com.teslasoft.libraries.support.ServicesApiActivity"
+            android:name="org.teslasoft.core.api.auth.TeslasoftIDAuth"
             android:exported="true"
             android:theme="@style/Theme.Transparent"
             android:icon="@drawable/teslasoft_services_icon"
@@ -62,23 +48,5 @@
             android:windowSoftInputMode="stateHidden"
             android:launchMode="singleTask" />
 
-        <activity
-            android:name=".TeslasoftIDAuth"
-            android:exported="true"
-            android:theme="@style/Theme.Transparent"
-            android:icon="@drawable/teslasoft_services_icon"
-            android:label="Teslasoft Core"
-            android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTask" />
-
-        <activity
-            android:name=".UpdateRequiredActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Transparent"
-            android:icon="@drawable/teslasoft_services_icon"
-            android:label="Teslasoft Core"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden"
-            android:process=":updater" />
     </application>
 </manifest>
