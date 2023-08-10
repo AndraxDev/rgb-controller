@@ -45,11 +45,9 @@ class TeslasoftIDAuth : FragmentActivity() {
                 intent.putExtra("signature", result.data?.getStringExtra("signature"))
                 this.setResult(result.resultCode, intent)
                 finish()
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
             } else if (result.resultCode == 3 || result.resultCode == 4) {
                 this.setResult(result.resultCode)
                 finish()
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
             } else {
                 MaterialAlertDialogBuilder(this).setTitle("Teslasoft Core")
                         .setMessage("This app requires one or more Teslasoft Core features that are currently unavailable.")
@@ -57,14 +55,12 @@ class TeslasoftIDAuth : FragmentActivity() {
                         .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
                             this.setResult(RESULT_CANCELED)
                             finish()
-                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
                         }.show()
             }
         } catch (e: Exception) {
             if (result.resultCode == 3 || result.resultCode == 4) {
                 this.setResult(result.resultCode)
                 finish()
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
             } else {
                 this.setResult(result.resultCode)
                 MaterialAlertDialogBuilder(this).setTitle("App sync")
@@ -73,7 +69,6 @@ class TeslasoftIDAuth : FragmentActivity() {
                         .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
                             this.setResult(RESULT_CANCELED)
                             finish()
-                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
                         }.show()
             }
         }

@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import top.defaults.colorpicker.BuildConfig;
+
 public class MainActivity extends FragmentActivity {
 
     private LinearLayout viewDevices;
@@ -370,7 +372,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         selectedTab = savedInstanceState.getInt("tab");
     }

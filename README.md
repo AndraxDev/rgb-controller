@@ -42,8 +42,8 @@ A simple app to control your lighting IoT devices
 ```
 
 ### Supported OS:
-- Android 9 - Android 12
-- Android subsystem for Windows
+- Android 9 - Android 13
+- Windows subsystem for Android
 
 ### How to connect?
 
