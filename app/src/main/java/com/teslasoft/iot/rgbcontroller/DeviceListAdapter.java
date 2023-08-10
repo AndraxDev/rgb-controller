@@ -25,6 +25,7 @@ import org.teslasoft.core.api.network.RequestNetwork;
 import org.teslasoft.core.api.network.RequestNetworkController;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DeviceListAdapter extends BaseAdapter {
     private final List<String> data;
@@ -143,7 +144,7 @@ public class DeviceListAdapter extends BaseAdapter {
                     editor.remove("getter");
 
                     try {
-                        if (appSettings.getString("selected_device", null).equals(deviceId)) {
+                        if (Objects.equals(appSettings.getString("selected_device", null), deviceId)) {
                             SharedPreferences.Editor ed = appSettings.edit();
                             ed.remove("selected_device");
                             ed.apply();

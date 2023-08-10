@@ -277,7 +277,7 @@ public class DeviceFragment extends DialogFragment {
             } else {
                 Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
 
-                SharedPreferences settings = context.getSharedPreferences("settings_".concat(getArguments().getString("device_id")), Context.MODE_PRIVATE);
+                SharedPreferences settings = context.getSharedPreferences("settings_".concat(Objects.requireNonNull(requireArguments().getString("device_id"))), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = settings.edit();
 
                 editor.putString("hostname", Objects.requireNonNull(fieldHostname.getText()).toString());
