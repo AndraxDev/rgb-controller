@@ -58,6 +58,8 @@ public class ColorPickerFragment extends Fragment {
     private ColorPickerView colorPicker;
     private CheckBox animation;
 
+    private CheckBox hardwareAnimation;
+
     private String deviceId;
     private String hostname;
     private String port;
@@ -154,6 +156,7 @@ public class ColorPickerFragment extends Fragment {
         TextView activityTitle = view.findViewById(R.id.activity_title);
         colorPicker = view.findViewById(R.id.color_picker);
         animation = view.findViewById(R.id.animation);
+        hardwareAnimation = view.findViewById(R.id.hardware_animation);
         ui = view.findViewById(R.id.ui);
         loadingScreen = view.findViewById(R.id.loading_screen);
         disabler = view.findViewById(R.id.disabler);
@@ -223,7 +226,7 @@ public class ColorPickerFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
+                if (s.toString().trim().isEmpty()) {
                     errorRed = true;
                     fieldRed.setError(getString(R.string.required_field));
                 } else {
@@ -256,7 +259,7 @@ public class ColorPickerFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
+                if (s.toString().trim().isEmpty()) {
                     errorGreen = true;
                     fieldGreen.setError(getString(R.string.required_field));
                 } else {
@@ -289,7 +292,7 @@ public class ColorPickerFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
+                if (s.toString().trim().isEmpty()) {
                     errorBlue = true;
                     fieldBlue.setError(getString(R.string.required_field));
                 } else {
@@ -350,13 +353,24 @@ public class ColorPickerFragment extends Fragment {
 
         animation.setOnCheckedChangeListener((buttonView, isChecked) -> isAnimating = isChecked);
 
+        hardwareAnimation.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null)), "A", apiListener);
+            isLoading = true;
+
+            if (isChecked) {
+                disabler.setVisibility(View.VISIBLE);
+            } else {
+                disabler.setVisibility(View.GONE);
+            }
+        });
+
         animate(0, 1024, 512);
 
         api = new RequestNetwork(this.requireActivity());
 
         try {
             SharedPreferences settings = context.getSharedPreferences("settings_".concat(deviceId), Context.MODE_PRIVATE);
-            if (settings.getString("enabled", null).equals("true")) {
+            if (Objects.equals(settings.getString("enabled", null), "true")) {
                 enableLeds();
             } else {
                 disableLeds();
@@ -381,7 +395,7 @@ public class ColorPickerFragment extends Fragment {
                     colorPicker.setInitialColor((int) c);
                     api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null)), "A", apiListener);
                     isLoading = true;
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) { /* unused */ }
             }
         }
     }
@@ -433,12 +447,12 @@ public class ColorPickerFragment extends Fragment {
             String rOut = cmd.replace("{_r}", rR);
             String gOut = rOut.replace("{_g}", gG);
 
-            return gOut.replace("{_b}", bB);
+            return gOut.replace("{_b}", bB).replace("{_a}", hardwareAnimation.isChecked() ? "1" : "0");
         } else {
             String rOut = cmd.replace("{_r}", r);
             String gOut = rOut.replace("{_g}", g);
 
-            return gOut.replace("{_b}", b);
+            return gOut.replace("{_b}", b).replace("{_a}", hardwareAnimation.isChecked() ? "1" : "0");
         }
     }
 
@@ -489,6 +503,10 @@ public class ColorPickerFragment extends Fragment {
 
         colorPicker.setEnabled(true);
 
+        hardwareAnimation.setEnabled(true);
+
+        hardwareAnimation.setAlpha(1.0f);
+
         disabler.setVisibility(View.GONE);
     }
 
@@ -503,6 +521,11 @@ public class ColorPickerFragment extends Fragment {
         animation.setEnabled(false);
 
         colorPicker.setEnabled(false);
+
+        hardwareAnimation.setChecked(false);
+        hardwareAnimation.setEnabled(false);
+
+        hardwareAnimation.setAlpha(0.5f);
 
         disabler.setVisibility(View.VISIBLE);
     }

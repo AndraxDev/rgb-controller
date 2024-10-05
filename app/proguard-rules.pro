@@ -31,6 +31,8 @@
 }
 
 -keep class com.teslasoft.** { *; }
+-keep class org.teslasoft.core.** { *; }
+-keep class org.teslasoft.core.auth.** { *; }
 -keep class top.defaults.checkerboarddrawable.** { *; }
 
 -keep class top.defaults.checkerboarddrawable.CheckerboardDrawable
