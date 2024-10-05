@@ -1,9 +1,8 @@
 package com.teslasoft.iot.rgbcontroller;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -12,6 +11,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -22,28 +22,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.load.MultiTransformation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.elevation.SurfaceColors;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.teslasoft.core.api.auth.TeslasoftIDAuth;
-import org.teslasoft.core.api.network.RequestNetwork;
-import org.teslasoft.core.api.network.RequestNetworkController;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
-import top.defaults.colorpicker.BuildConfig;
+import kotlin.Suppress;
 
 public class MainActivity extends FragmentActivity {
 
@@ -51,68 +37,18 @@ public class MainActivity extends FragmentActivity {
     private LinearLayout viewController;
     private LinearLayout viewSettings;
     private BottomNavigationView navigator;
-    private ImageView accountIcon;
-    private TextView accountName;
-    private TextView accountEmail;
     private LinearLayout noSelected;
+
+    private LinearLayout empty;
 
     private String did = null;
     private DeviceListAdapter adapter;
     private final ArrayList<String> ids = new ArrayList<>();
 
-    private int mode = 0;
     private int selectedTab = 1;
     private boolean isAnimating = false;
 
-    private final RequestNetwork.RequestListener accountListener = new RequestNetwork.RequestListener() {
-        @Override
-        public void onResponse(@NonNull String tag, @NonNull String response) {
-            try {
-                Gson gson = new Gson();
-                Type r = TypeToken.getParameterized(UserModel.class).getType();
-                UserModel sr = gson.fromJson(response, r);
-
-                accountName.setText(sr.getUser_name());
-                accountEmail.setText(sr.getUser_email());
-            } catch (Exception e) {
-                invalidateSession(Objects.requireNonNull(e.getMessage()).concat(" [load data]"));
-            }
-        }
-
-        @Override
-        public void onErrorResponse(@NonNull String tag, @NonNull String message) {
-            invalidateSession(message);
-        }
-    };
-
-    private final ActivityResultLauncher<Intent> authDataListener = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (mode == 1) {
-            if (result.getResultCode() >= 20) {
-                try {
-                    if (result.getData() != null) {
-                        String sig = result.getData().getStringExtra("signature");
-                        String uid = result.getData().getStringExtra("account_id");
-
-                        SharedPreferences accountSettings = getSharedPreferences("account", MODE_PRIVATE);
-                        SharedPreferences.Editor edit = accountSettings.edit();
-                        edit.putString("account_id", uid);
-                        edit.putString("signature", sig);
-                        edit.apply();
-
-                        loadAccountData();
-                    } else {
-                        invalidateSession("Data is null");
-                    }
-                } catch (Exception e) {
-                    invalidateSession(Objects.requireNonNull(e.getMessage()).concat(" [return response]"));
-                }
-            } else if (result.getResultCode() == 3) {
-                removeAccountData();
-            }
-            mode = 0;
-        }
-    });
-
+    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,7 +57,6 @@ public class MainActivity extends FragmentActivity {
         getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
 
         initUI();
-        loadAccountData();
         initSettings();
         initNavigator();
         restoreActivity(savedInstanceState);
@@ -148,23 +83,24 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void initUI() {
         ImageView appIcon = findViewById(R.id.app_icon);
         TextView appVersion = findViewById(R.id.app_version);
         ImageView appI = findViewById(R.id.app_i);
         ListView listDev = findViewById(R.id.list_dev);
 
-        accountIcon = findViewById(R.id.account_icon);
-        accountName = findViewById(R.id.account_name);
-        accountEmail = findViewById(R.id.account_email);
         viewDevices = findViewById(R.id.view_devices);
         viewController = findViewById(R.id.view_controller);
         viewSettings = findViewById(R.id.view_settings);
         navigator = findViewById(R.id.bottom_navigation);
         noSelected = findViewById(R.id.no_selected);
+        empty = findViewById(R.id.empty);
+
+        navigator.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this));
+        getWindow().setNavigationBarColor(SurfaceColors.SURFACE_4.getColor(this));
 
         appIcon.setImageResource(R.mipmap.ic_launcher_round);
-        accountIcon.setImageResource(R.drawable.ic_account_circle);
         appI.setImageResource(R.mipmap.ic_launcher_round);
 
         noSelected.setVisibility(View.VISIBLE);
@@ -172,7 +108,12 @@ public class MainActivity extends FragmentActivity {
         viewController.setVisibility(View.GONE);
         viewSettings.setVisibility(View.GONE);
 
-        appVersion.setText(getResources().getString(R.string.text_version).concat(" ").concat(BuildConfig.VERSION_NAME));
+        PackageManager pm = getPackageManager();
+        try {
+            appVersion.setText(getResources().getString(R.string.text_version).concat(" ").concat(Objects.requireNonNull(pm.getPackageInfo(getPackageName(), 0).versionName)));
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -180,51 +121,6 @@ public class MainActivity extends FragmentActivity {
 
         listDev.setDividerHeight(0);
         listDev.setAdapter(adapter);
-    }
-
-    private void loadAccountData() {
-        SharedPreferences accountSettings = getSharedPreferences("account", MODE_PRIVATE);
-
-        String uid = accountSettings.getString("account_id", "");
-        String sig = accountSettings.getString("signature", "");
-
-        if (!uid.equals("")) {
-            accountName.setText(R.string.text_loading);
-            accountEmail.setText("");
-
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions = requestOptions.transform(new MultiTransformation<>(Arrays.asList(new CenterCrop(), new RoundedCorners((int) convertDpToPixel(22, MainActivity.this)))));
-            Glide.with(getApplicationContext()).load(Uri.parse("https://id.teslasoft.org/xauth/users/".concat(uid).concat(".png"))).apply(requestOptions).into(accountIcon);
-
-            RequestNetwork ar = new RequestNetwork(this);
-            ar.startRequestNetwork(RequestNetworkController.GET, "https://id.teslasoft.org/xauth/GetAccountInfo.php?sig=".concat(sig).concat("&uid=").concat(uid), "A", accountListener);
-        }
-    }
-
-    private void removeAccountData() {
-        try {
-            SharedPreferences accountSettings = getSharedPreferences("account", MODE_PRIVATE);
-            SharedPreferences.Editor edit = accountSettings.edit();
-            edit.remove("account_id");
-            edit.remove("signature");
-            edit.apply();
-        } catch (Exception ignored) { /* unused */ }
-
-        accountIcon.setImageResource(R.drawable.ic_account_circle);
-        accountName.setText(R.string.widget_sync_title);
-        accountEmail.setText(R.string.widget_sync_description);
-    }
-
-    private void invalidateSession(String e) {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.account_manager)
-                .setMessage(getString(R.string.auth_failed).concat(" ").concat(e))
-                .setCancelable(false)
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                })
-                .show();
-
-        removeAccountData();
     }
 
     private void initSettings() {
@@ -240,7 +136,7 @@ public class MainActivity extends FragmentActivity {
         while (true) {
             SharedPreferences deviceSettings = getSharedPreferences("settings_".concat(Integer.toString(i)), MODE_PRIVATE);
 
-            if (deviceSettings.getString("name", "").equals("")) {
+            if (deviceSettings.getString("name", "").isEmpty()) {
                 break;
             }
 
@@ -249,6 +145,12 @@ public class MainActivity extends FragmentActivity {
             }
 
             i++;
+        }
+
+        if (ids.isEmpty()) {
+            empty.setVisibility(View.VISIBLE);
+        } else {
+            empty.setVisibility(View.GONE);
         }
     }
 
@@ -260,11 +162,6 @@ public class MainActivity extends FragmentActivity {
                     return true;
                 } else if (item.getItemId() == R.id.page_controller) {
                     setSelectedTab(selectedTab, 2);
-                    /*if (did == null) {
-                        noSelected.setVisibility(View.VISIBLE);
-                    } else {
-                        noSelected.setVisibility(View.GONE);
-                    }*/
                     return true;
                 } else if (item.getItemId() == R.id.page_settings) {
                     setSelectedTab(selectedTab, 3);
@@ -301,6 +198,12 @@ public class MainActivity extends FragmentActivity {
         if (ids.isEmpty()) {
             did = null;
             noSelected.setVisibility(View.VISIBLE);
+        }
+
+        if (ids.isEmpty()) {
+            empty.setVisibility(View.VISIBLE);
+        } else {
+            empty.setVisibility(View.GONE);
         }
 
         recreate();
@@ -377,10 +280,6 @@ public class MainActivity extends FragmentActivity {
         selectedTab = savedInstanceState.getInt("tab");
     }
 
-    public static float convertDpToPixel(float dp, Context context){
-        return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-    }
-
     public void addDevice(View v) {
         DeviceFragment deviceFragment = DeviceFragment.newInstance(Integer.toString(getAvailableDeviceId()), "", "", "", "", "", "");
         deviceFragment.show(getSupportFragmentManager().beginTransaction(), "DeviceDialog");
@@ -390,6 +289,12 @@ public class MainActivity extends FragmentActivity {
             public void onSuccess() {
                 ids.add(Integer.toString(getAvailableDeviceId() - 1));
                 adapter.notifyDataSetChanged();
+
+                if (ids.isEmpty()) {
+                    empty.setVisibility(View.VISIBLE);
+                } else {
+                    empty.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -404,7 +309,7 @@ public class MainActivity extends FragmentActivity {
 
         while (true) {
             SharedPreferences settings = getSharedPreferences("settings_".concat(Integer.toString(e)), MODE_PRIVATE);
-            if (settings.getString("hostname", "").equals("")) {
+            if (settings.getString("hostname", "").isEmpty()) {
                 break;
             }
 
@@ -434,20 +339,5 @@ public class MainActivity extends FragmentActivity {
         intent.setData(Uri.parse("https://teslasoft.org/rgb-controller/tos.html"));
         intent.setAction(Intent.ACTION_VIEW);
         startActivity(intent);
-    }
-
-    public void sync(View v) {
-        try {
-            mode = 1;
-            Intent apiIntent = new Intent(this, TeslasoftIDAuth.class);
-            authDataListener.launch(apiIntent);
-        } catch (Exception e) {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle(R.string.teslasoft_core)
-                    .setMessage(R.string.teslasoft_core_error)
-                    .setCancelable(false)
-                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {})
-                    .show();
-        }
     }
 }

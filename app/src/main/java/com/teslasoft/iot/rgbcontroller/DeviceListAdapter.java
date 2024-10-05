@@ -8,10 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -19,6 +17,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.teslasoft.core.api.network.RequestNetwork;
@@ -90,8 +89,8 @@ public class DeviceListAdapter extends BaseAdapter {
 
         final TextView name = v.findViewById(R.id.name);
         final TextView status = v.findViewById(R.id.status);
-        final Button edit = v.findViewById(R.id.edit);
-        final Button remove = v.findViewById(R.id.remove);
+        final MaterialButton edit = v.findViewById(R.id.edit);
+        final MaterialButton remove = v.findViewById(R.id.remove);
         final ImageView icon = v.findViewById(R.id.icon);
         final ConstraintLayout ui = v.findViewById(R.id.ui);
 
@@ -119,7 +118,7 @@ public class DeviceListAdapter extends BaseAdapter {
         return v;
     }
 
-    private void initLogic(int pos, Button edit, Button remove, TextView name, TextView status, ConstraintLayout ui, String deviceId) {
+    private void initLogic(int pos, MaterialButton edit, MaterialButton remove, TextView name, TextView status, ConstraintLayout ui, String deviceId) {
         SharedPreferences appSettings = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences deviceSettings = context.getSharedPreferences("settings_".concat(deviceId), Context.MODE_PRIVATE);
 

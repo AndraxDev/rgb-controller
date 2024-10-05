@@ -42,26 +42,24 @@
         app:layout_constraintStart_toEndOf="@+id/icon"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/edit"
-        style="?android:attr/borderlessButtonStyle"
+        style="@style/Widget.Material3.Button"
         android:layout_width="80dp"
-        android:layout_height="36dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/btn_accent"
         android:text="@string/text_edit"
         android:textColor="@color/window_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/remove"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/remove"
-        style="?android:attr/borderlessButtonStyle"
+        style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="60dp"
-        android:layout_height="36dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/btn_accent_outline"
         android:text="X"
         android:textColor="@color/button"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -224,9 +224,9 @@ public class DeviceFragment extends DialogFragment {
                 .setCancelable(false)
                 .setPositiveButton("OK", (dialog, which) -> validateForm())
                 .setNegativeButton("Cancel", (dialog, which) -> {
-                    try {
-                        DeviceFragment.this.alistener.onFailed();
-                    } catch (Exception ignored) { /* unused */ }
+                    if (alistener != null) {
+                        alistener.onCancelled();
+                    }
                 });
 
         return builder.create();
@@ -314,6 +314,7 @@ public class DeviceFragment extends DialogFragment {
     public interface DeviceAddedListener {
         void onSuccess();
         void onFailed();
+        default void onCancelled() {}
     }
 
     public void setDeviceAddedListener(DeviceFragment.DeviceAddedListener listener) {

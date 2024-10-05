@@ -23,7 +23,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="24dp"
         android:baselineAligned="false"
         android:orientation="horizontal"
@@ -41,6 +41,10 @@
             android:hint="@string/field_r"
             android:textColor="#FF0000"
             android:textColorHint="#66FF0000"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
             app:boxStrokeColor="@color/red"
             app:boxStrokeErrorColor="@color/error">
 
@@ -66,6 +70,10 @@
             android:hint="@string/field_g"
             android:textColor="#00FF00"
             android:textColorHint="#6600FF00"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
             app:boxStrokeColor="@color/green"
             app:boxStrokeErrorColor="@color/error">
 
@@ -90,6 +98,10 @@
             android:hint="@string/field_b"
             android:textColor="#0000FF"
             android:textColorHint="#660000FF"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
             app:boxStrokeColor="@color/blue"
             app:boxStrokeErrorColor="@color/error">
 
@@ -118,48 +130,63 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_title" />
 
-                <LinearLayout
-                    android:id="@+id/action_buttons_group"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="4dp"
-                    android:orientation="horizontal"
-                    android:visibility="gone"
-                    android:weightSum="2"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/animation">
-                </LinearLayout>
+        <LinearLayout
+            android:id="@+id/action_buttons_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/animation">
+        </LinearLayout>
 
-                <CheckBox
-                    android:id="@+id/animation"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="24dp"
-                    android:buttonTint="@color/accent_900"
-                    android:text="@string/checkbox_animation"
-                    android:textColor="@color/accent_900"
-                    app:buttonTint="@color/accent_900"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/colors_fields_group" />
+    <CheckBox
+        android:id="@+id/animation"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:buttonTint="@color/accent_900"
+        android:text="@string/checkbox_animation"
+        android:textColor="@color/accent_900"
+        app:buttonTint="@color/accent_900"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/colors_fields_group" />
 
-                <TextView
-                    android:id="@+id/debug"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/text_debug"
-                    android:textColor="#FF8400"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+    <CheckBox
+        android:id="@+id/hardware_animation"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:buttonTint="@color/accent_900"
+        android:elevation="6dp"
+        android:text="Hardware animation (may not be supported on some devices)"
+        android:textColor="@color/accent_900"
+        app:buttonTint="@color/accent_900"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/animation" />
+
+        <TextView
+            android:id="@+id/debug"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/text_debug"
+            android:textColor="#FF8400"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     <LinearLayout

@@ -4,14 +4,14 @@ plugins {
 }
 
 android {
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.teslasoft.iot.rgbcontroller"
-        minSdk 28
-        targetSdk 34
-        versionCode 206
-        versionName "2.0.6"
+        minSdk 31
+        targetSdk 35
+        versionCode 208
+        versionName "2.0.8"
     }
 
     buildTypes {
@@ -24,35 +24,36 @@ android {
         }
 
         debug {
-            debuggable false
             minifyEnabled true
             shrinkResources true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
 
     namespace 'com.teslasoft.iot.rgbcontroller'
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.13.0-alpha06'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
     implementation 'com.github.duanhong169:colorpicker:1.1.6'
-    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'com.github.svenoaks:MasterSwitchPreference:0.9.1'
+    implementation 'org.teslasoft.core.auth:teslasoft-id:1.4.6'
 }
 
 configurations {

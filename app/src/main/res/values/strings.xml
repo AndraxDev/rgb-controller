@@ -47,4 +47,6 @@
     <string name="teslasoft_core">Teslasoft Core</string>
     <string name="teslasoft_core_error">This feature requires one or more Teslasoft services that are not currently available on your device.</string>
     <string name="title_used_libs">Used libs</string>
+    <string name="no_devices_found">No devices found</string>
+    <string name="your_smart_devices_will_appear_here">Your smart devices will appear here</string>
 </resources>

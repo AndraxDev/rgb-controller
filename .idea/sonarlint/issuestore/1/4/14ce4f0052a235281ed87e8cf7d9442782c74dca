@@ -1,0 +1,11 @@
+
+d
+java:S1192,"IDefine a constant instead of duplicating this literal "hostname" 4 times.(ñ‘ Øýÿÿÿÿ
+_
+java:S1192+"IDefine a constant instead of duplicating this literal "protocol" 3 times.(î±òË
+]
+java:S11920"GDefine a constant instead of duplicating this literal "getter" 3 times.(ò¬ 
+e
+java:S1192*"JDefine a constant instead of duplicating this literal "device_id" 4 times.(”¤šúÿÿÿÿ
+m
+java:S3776V"RRefactor this method to reduce its Cognitive Complexity from 33 to the 15 allowed.(à“æ…øÿÿÿÿ
