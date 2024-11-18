@@ -96,7 +96,7 @@ public class DeviceFragment extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
+                if (s.toString().trim().isEmpty()) {
                     errorProtocol = true;
                     fieldProtocol.setError(getString(R.string.required_field));
                 } else {
@@ -115,7 +115,7 @@ public class DeviceFragment extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
+                if (s.toString().trim().isEmpty()) {
                     errorHostname = true;
                     fieldHostname.setError(getString(R.string.required_field));
                 } else {
@@ -134,7 +134,7 @@ public class DeviceFragment extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
+                if (s.toString().trim().isEmpty()) {
                     errorPort = true;
                     fieldPort.setError(getString(R.string.required_field));
                 } else {
@@ -165,7 +165,7 @@ public class DeviceFragment extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().equals("")) {
+                if (s.toString().trim().isEmpty()) {
                     errorCmd = true;
                     fieldCmd.setError(getString(R.string.required_field));
                 } else {
@@ -261,11 +261,11 @@ public class DeviceFragment extends DialogFragment {
         fieldName.setText(settings.getString("name", ""));
         fieldGetter.setText(settings.getString("getter", ""));
 
-        errorProtocol = Objects.requireNonNull(fieldProtocol.getText()).toString().trim().equals("");
-        errorHostname = Objects.requireNonNull(fieldHostname.getText()).toString().trim().equals("");
-        errorPort = Objects.requireNonNull(fieldPort.getText()).toString().trim().equals("");
-        errorCmd = Objects.requireNonNull(fieldCmd.getText()).toString().trim().equals("");
-        errorName = Objects.requireNonNull(fieldName.getText()).toString().trim().equals("");
+        errorProtocol = Objects.requireNonNull(fieldProtocol.getText()).toString().trim().isEmpty();
+        errorHostname = Objects.requireNonNull(fieldHostname.getText()).toString().trim().isEmpty();
+        errorPort = Objects.requireNonNull(fieldPort.getText()).toString().trim().isEmpty();
+        errorCmd = Objects.requireNonNull(fieldCmd.getText()).toString().trim().isEmpty();
+        errorName = Objects.requireNonNull(fieldName.getText()).toString().trim().isEmpty();
     }
 
     public void validateForm() {
