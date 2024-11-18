@@ -5,7 +5,6 @@ public class Color {
     private String green;
     private String blue;
 
-
     public String getRed() {
         return red;
     }

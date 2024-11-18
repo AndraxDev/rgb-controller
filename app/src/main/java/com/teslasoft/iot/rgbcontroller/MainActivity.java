@@ -2,19 +2,16 @@ package com.teslasoft.iot.rgbcontroller;
 
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,8 +25,6 @@ import com.google.android.material.elevation.SurfaceColors;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
-import kotlin.Suppress;
 
 public class MainActivity extends FragmentActivity {
 
@@ -329,14 +324,14 @@ public class MainActivity extends FragmentActivity {
 
     public void openPrivacy(View v) {
         Intent intent = new Intent();
-        intent.setData(Uri.parse("https://teslasoft.org/rgb-controller/privacy.html"));
+        intent.setData(Uri.parse("https://teslasoft.org/privacy"));
         intent.setAction(Intent.ACTION_VIEW);
         startActivity(intent);
     }
 
     public void openTos(View v) {
         Intent intent = new Intent();
-        intent.setData(Uri.parse("https://teslasoft.org/rgb-controller/tos.html"));
+        intent.setData(Uri.parse("https://teslasoft.org/tos"));
         intent.setAction(Intent.ACTION_VIEW);
         startActivity(intent);
     }
