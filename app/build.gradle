@@ -10,8 +10,8 @@ android {
         applicationId "com.teslasoft.iot.rgbcontroller"
         minSdk 31
         targetSdk 35
-        versionCode 2010
-        versionName "2.0.10"
+        versionCode 2011
+        versionName "2.0.11"
     }
 
     buildTypes {
