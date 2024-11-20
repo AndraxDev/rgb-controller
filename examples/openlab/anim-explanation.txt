@@ -1,0 +1,8 @@
+p -1 # p means part, -1 means infinite repeat
+c 1-83 255 0 0 # c means colors, 1-83 means led ids, 255 0 0 means red
+t 1000 # t means pause, 1000 means 1000ms
+c 1-83 0 0 0
+t 1000
+s # s Means stack end. Add it to the end of animation part (if no pause is present), otherwise last frame will not be rendered.
+# All commands before the pause are stacked into a single matrix frame and sent as a single MQTT packet.
+# This approach is used to optimize amount of MQTT packets sent to the server making animation smoother.

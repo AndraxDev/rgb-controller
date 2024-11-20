@@ -2,6 +2,7 @@ package com.teslasoft.iot.rgbcontroller;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,12 +15,16 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
@@ -28,7 +33,11 @@ import com.google.gson.reflect.TypeToken;
 import org.teslasoft.core.api.network.RequestNetwork;
 import org.teslasoft.core.api.network.RequestNetworkController;
 
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -57,6 +66,15 @@ public class ColorPickerFragment extends Fragment {
     private LinearLayout disabler;
     private ColorPickerView colorPicker;
     private CheckBox animation;
+    private TextInputEditText fieldAnimation;
+    private TextInputEditText fieldAnimEndpoint;
+
+    private TextInputEditText fieldHwPredefined;
+
+    private MaterialButton btnSetPredefined;
+    private MaterialButton btnOpenFile;
+    private MaterialButton btnStart;
+    private MaterialButton btnStop;
 
     private CheckBox hardwareAnimation;
 
@@ -66,6 +84,8 @@ public class ColorPickerFragment extends Fragment {
     private String protocol;
     private String cmd;
     private String getter;
+
+    private String animationCmd = "/animation";
 
     private Context context;
 
@@ -114,11 +134,26 @@ public class ColorPickerFragment extends Fragment {
         public void onErrorResponse(@NonNull String tag, @NonNull String message) { /* unused */ }
     };
 
+    private final RequestNetwork.RequestListener animationRequestListener = new RequestNetwork.RequestListener() {
+        @Override
+        public void onResponse(@NonNull String tag, @NonNull String response) {
+            // TODO: Decode response
+        }
+
+        @Override
+        public void onErrorResponse(@NonNull String tag, @NonNull String message) {
+            new MaterialAlertDialogBuilder(context)
+                    .setTitle("Error")
+                    .setMessage("An error occurred while trying to send the animation command to the device: " + message)
+                    .setPositiveButton("OK", (dialog, which) -> {})
+                    .show();
+        }
+    };
+
     private final RequestNetwork.RequestListener apiListener = new RequestNetwork.RequestListener() {
         @Override
         public void onResponse(@NonNull String tag, @NonNull String response) {
             loadingScreen.setVisibility(View.GONE);
-
             isLoading = false;
         }
 
@@ -145,6 +180,128 @@ public class ColorPickerFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_color_picker, container, false);
     }
 
+    private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+        if (uri != null) {
+            readFileFromUri(uri);
+        }
+    });
+
+    private void readFileFromUri(Uri uri) {
+        try (InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri)) {
+            if (inputStream != null) {
+                int size = inputStream.available();
+                byte[] bytes = new byte[size];
+                inputStream.read(bytes);
+                String content = new String(bytes);
+
+                if (validateFile(content)) {
+                    fieldAnimation.setText(content);
+                }
+            }
+        } catch (Exception e) {
+            new MaterialAlertDialogBuilder(context)
+                    .setTitle("Error")
+                    .setMessage("An error occurred while trying to read the file.")
+                    .setPositiveButton("OK", (dialog, which) -> {
+                    })
+                    .show();
+        }
+    }
+
+    private boolean validateFile(String string) {
+        String[] lines = string.split("\n");
+        boolean isValid = true;
+        int lineNumber = 1;
+        for (String line : lines) {
+            List<String> data = Arrays.asList(line.split(" "));
+
+            if (Objects.equals(data.get(0), "p")) {
+                try {
+                    if (Integer.parseInt(data.get(1)) < -1 || Integer.parseInt(data.get(1)) == 0) {
+                        new MaterialAlertDialogBuilder(context)
+                                .setTitle("Error")
+                                .setMessage("Syntax error: Invalid value at " + lineNumber + ":3: Expected a positive integer or -1, but got " + data.get(1) + ".")
+                                .setPositiveButton("OK", (dialog, which) -> {
+                            })
+                            .show();
+                        return false;
+                    }
+                } catch (Exception e) {
+                    new MaterialAlertDialogBuilder(context)
+                            .setTitle("Error")
+                            .setMessage("Validation error: Static check failed at " + lineNumber + ". Exception: " + e.getMessage())
+                            .setPositiveButton("OK", (dialog, which) -> {
+                        })
+                        .show();
+                    return false;
+                }
+            } else if (Objects.equals(data.get(0), "c")) {
+                try {
+                    int cl = 0;
+                    for (int i = 2; i < data.size(); i++) {
+                        if (Integer.parseInt(data.get(i)) < 10) cl+=1;
+                        if (Integer.parseInt(data.get(i)) < 100) cl+=2;
+                        if (Integer.parseInt(data.get(i)) < 256) cl+=3;
+                        if (Integer.parseInt(data.get(i)) < 0 || Integer.parseInt(data.get(i)) > 255) {
+                            int charNumber = data.get(0).length() + data.get(1).length() + i + cl;
+
+                            new MaterialAlertDialogBuilder(context)
+                                    .setTitle("Error")
+                                    .setMessage("Syntax error: Invalid value at " + lineNumber + ":" + charNumber + ": Expected a value between 0 and 255, but got " + data.get(i) + ".")
+                                    .setPositiveButton("OK", (dialog, which) -> {
+                                })
+                                .show();
+                        }
+                    }
+                } catch (Exception e) {
+                    new MaterialAlertDialogBuilder(context)
+                            .setTitle("Error")
+                            .setMessage("Validation error: Static check failed at " + lineNumber + ". Exception: " + e.getMessage())
+                            .setPositiveButton("OK", (dialog, which) -> {
+                        })
+                        .show();
+                    return false;
+                }
+            } else if (Objects.equals(data.get(0), "t")) {
+                try {
+                    if (Integer.parseInt(data.get(1)) <= 0) {
+                        new MaterialAlertDialogBuilder(context)
+                                .setTitle("Error")
+                                .setMessage("Syntax error: Invalid value at " + lineNumber + ":3: Expected a positive integer, but got " + data.get(1) + ".")
+                                .setPositiveButton("OK", (dialog, which) -> {
+                                })
+                                .show();
+                        return false;
+                    }
+                } catch (Exception e) {
+                    new MaterialAlertDialogBuilder(context)
+                            .setTitle("Error")
+                            .setMessage("Validation error: Static check failed at " + lineNumber + ". Exception: " + e.getMessage())
+                            .setPositiveButton("OK", (dialog, which) -> {
+                            })
+                            .show();
+                    return false;
+                }
+            } else {
+                if (!Objects.equals(data.get(0), "s")) {
+                    new MaterialAlertDialogBuilder(context)
+                            .setTitle("Error")
+                            .setMessage("Syntax error: Unexpected junk '" + data.get(0) + "' at " + lineNumber + ":1. Expected 'p', 'c', 't' or 's'.")
+                            .setPositiveButton("OK", (dialog, which) -> {
+                            })
+                            .show();
+                    return false;
+                }
+            }
+        }
+
+        return isValid;
+    }
+
+    private void launchFileIntent() {
+        mGetContent.launch("*/*");
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -160,12 +317,43 @@ public class ColorPickerFragment extends Fragment {
         ui = view.findViewById(R.id.ui);
         loadingScreen = view.findViewById(R.id.loading_screen);
         disabler = view.findViewById(R.id.disabler);
+        fieldAnimation = view.findViewById(R.id.field_animation);
+        fieldAnimEndpoint = view.findViewById(R.id.field_anim_endpoint);
+        fieldHwPredefined = view.findViewById(R.id.field_hw_predefined);
+        btnSetPredefined = view.findViewById(R.id.btn_set_predefined);
+        btnOpenFile = view.findViewById(R.id.btn_load_file);
+        btnStart = view.findViewById(R.id.btn_start);
+        btnStop = view.findViewById(R.id.btn_stop);
 
         disabler.setOnClickListener(v -> {});
-
         loadingScreen.setVisibility(View.GONE);
-
         syncProvider = new RequestNetwork(requireActivity());
+
+        fieldAnimEndpoint.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { /* unused */ }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                animationCmd = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { /* unused */ }
+        });
+
+        animationCmd = Objects.requireNonNull(fieldAnimEndpoint.getText()).toString();
+
+        btnOpenFile.setOnClickListener(v -> launchFileIntent());
+
+        btnSetPredefined.setOnClickListener(v -> api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null, Objects.requireNonNull(fieldHwPredefined.getText()).toString())), "A", apiListener));
+
+        btnStart.setOnClickListener(v -> {
+            String base64animation = Base64.getEncoder().encodeToString(Objects.requireNonNull(fieldAnimation.getText()).toString().getBytes());
+            api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(animationCmd) + base64animation, "A", animationRequestListener);
+        });
+
+        btnStop.setOnClickListener(v -> api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(animationCmd), "A", animationRequestListener));
 
         try {
             SharedPreferences settings = context.getSharedPreferences("settings_".concat(deviceId), Context.MODE_PRIVATE);
@@ -345,7 +533,7 @@ public class ColorPickerFragment extends Fragment {
                 editor.apply();
 
                 if (isPoweredOn) {
-                    api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null)), "A", apiListener);
+                    api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null, null)), "A", apiListener);
                     isLoading = true;
                 }
             }
@@ -354,7 +542,7 @@ public class ColorPickerFragment extends Fragment {
         animation.setOnCheckedChangeListener((buttonView, isChecked) -> isAnimating = isChecked);
 
         hardwareAnimation.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null)), "A", apiListener);
+            api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null, null)), "A", apiListener);
             isLoading = true;
 
             if (isChecked) {
@@ -393,7 +581,7 @@ public class ColorPickerFragment extends Fragment {
 
                     long c = Long.parseLong(color, 16);
                     colorPicker.setInitialColor((int) c);
-                    api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null)), "A", apiListener);
+                    api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null, null)), "A", apiListener);
                     isLoading = true;
                 } catch (Exception ignored) { /* unused */ }
             }
@@ -421,7 +609,7 @@ public class ColorPickerFragment extends Fragment {
                 fieldGreen.setText(gG);
                 fieldBlue.setText(bB);
 
-                api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port.concat(getCmd(cmd, null, null, null))), "A", apiListener);
+                api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port.concat(getCmd(cmd, null, null, null, null))), "A", apiListener);
                 isLoading = true;
                 String color = "FF".concat(String.format("%02X", Integer.parseInt(Objects.requireNonNull(fieldRed.getText()).toString().trim()))).concat(String.format("%02X", Integer.parseInt(Objects.requireNonNull(fieldGreen.getText()).toString().trim()))).concat(String.format("%02X", Integer.parseInt(Objects.requireNonNull(fieldBlue.getText()).toString().trim())));
                 long xc = Long.parseLong(color, 16);
@@ -438,7 +626,7 @@ public class ColorPickerFragment extends Fragment {
         }, 50);
     }
 
-    public String getCmd(String cmd, @Nullable String r, @Nullable String g, @Nullable String b) {
+    public String getCmd(String cmd, @Nullable String r, @Nullable String g, @Nullable String b, @Nullable String a) {
         if (r == null || g == null || b == null) {
             String rR = Objects.requireNonNull(fieldRed.getText()).toString().trim();
             String gG = Objects.requireNonNull(fieldGreen.getText()).toString().trim();
@@ -447,12 +635,16 @@ public class ColorPickerFragment extends Fragment {
             String rOut = cmd.replace("{_r}", rR);
             String gOut = rOut.replace("{_g}", gG);
 
-            return gOut.replace("{_b}", bB).replace("{_a}", hardwareAnimation.isChecked() ? "1" : "0");
+            String ha = a == null ? hardwareAnimation.isChecked() ? "1" : "0" : a;
+
+            return gOut.replace("{_b}", bB).replace("{_a}", ha);
         } else {
             String rOut = cmd.replace("{_r}", r);
             String gOut = rOut.replace("{_g}", g);
 
-            return gOut.replace("{_b}", b).replace("{_a}", hardwareAnimation.isChecked() ? "1" : "0");
+            String ha = a == null ? hardwareAnimation.isChecked() ? "1" : "0" : a;
+
+            return gOut.replace("{_b}", b).replace("{_a}", ha);
         }
     }
 
@@ -468,7 +660,7 @@ public class ColorPickerFragment extends Fragment {
             disableLeds();
 
             if (!formError) {
-                api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, "0", "0", "0")), "A", apiListener);
+                api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, "0", "0", "0", null)), "A", apiListener);
                 isLoading = true;
             }
 
@@ -480,7 +672,7 @@ public class ColorPickerFragment extends Fragment {
             enableLeds();
 
             if (!formError) {
-                api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null)), "A", apiListener);
+                api.startRequestNetwork(RequestNetworkController.GET, protocol.concat("://").concat(hostname).concat(":").concat(port).concat(getCmd(cmd, null, null, null, null)), "A", apiListener);
                 isLoading = true;
             }
 
