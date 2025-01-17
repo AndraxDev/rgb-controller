@@ -2,34 +2,67 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ui"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/window_background">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/no_selection"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="10dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            layout="@layout/fragment_no_devices"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
+            android:id="@+id/scrollable"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="24dp">
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_set_predefined" />
 
             <TextView
                 android:id="@+id/activity_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
                 android:layout_marginTop="28dp"
                 android:text="@string/app_name"
                 android:textColor="@color/text_title"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,7 +71,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
@@ -66,9 +99,12 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/field_red"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="52dp"
                         android:backgroundTint="@color/button"
-                        android:inputType="numberSigned"
+                        android:fontFamily="@font/ubuntu"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:text="0"
                         android:textColor="#FF0000"
                         android:textColorHighlight="#33FF0000"
                         app:backgroundTint="@color/button" />
@@ -95,9 +131,12 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/field_green"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="52dp"
                         android:backgroundTint="@color/button"
-                        android:inputType="numberSigned"
+                        android:fontFamily="@font/ubuntu"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:text="0"
                         android:textColor="#00FF00"
                         android:textColorHighlight="#3300FF00"
                         app:backgroundTint="@color/button" />
@@ -123,9 +162,12 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/field_blue"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="52dp"
                         android:backgroundTint="@color/button"
-                        android:inputType="numberSigned"
+                        android:fontFamily="@font/ubuntu"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:text="0"
                         android:textColor="#0000FF"
                         android:textColorHighlight="#330000FF"
                         app:backgroundTint="@color/button" />
@@ -137,9 +179,9 @@
                 android:id="@+id/color_picker"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="48dp"
+                android:layout_marginLeft="36dp"
                 android:layout_marginTop="48dp"
-                android:layout_marginRight="48dp"
+                android:layout_marginRight="36dp"
                 app:enableAlpha="false"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -159,12 +201,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/animation"></LinearLayout>
+                app:layout_constraintTop_toBottomOf="@+id/animation" />
 
             <CheckBox
                 android:id="@+id/animation"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
@@ -179,8 +221,9 @@
             <CheckBox
                 android:id="@+id/hardware_animation"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
                 android:buttonTint="@color/accent_900"
                 android:elevation="6dp"
@@ -201,7 +244,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
 
             <LinearLayout
                 android:id="@+id/loading_screen"
@@ -258,13 +300,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
+                android:gravity="center"
                 android:text="Custom animation (Experimental)"
-                android:textSize="16sp"
+                android:textColor="@color/accent_900"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hardware_animation" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout"
@@ -285,27 +330,28 @@
                     android:id="@+id/field_animation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
                     android:gravity="start|top"
                     android:hint="Animation"
                     android:minLines="10"
-                    android:text="p -1\nc 1-81 255 0 0\nt 1000\nc 1-81 0 0 0\nt 1000\ns" />
+                    android:text="p -1\nc 1-81 255 0 0\nt 1000\nc 1-81 0 0 0\nt 1000\ns\n" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
-                style="@style/Widget.Material3.Button.TonalButton"
                 android:id="@+id/btn_load_file"
+                style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="24dp"
                 android:text="Load from file"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/step_note" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/step_note"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -313,7 +359,7 @@
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/btn_accent_dark"
                 android:padding="16dp"
-                android:text="Instructions:\nLines starting with 'p' indicates animation part. Number near 'p' means repeat count. Set -1 for infinity loop.\nLines starting with 'c' means color commands. First one number (or few numbers separated with '-' or with ',') are led ids. If you want to add multible non-sequential ids, separate it with comma. Combining '-' and ',' in the same command is not currently supported. Remaining numbers are color channels values (RGB).\nLines starting with 't' means pause in milliseconds.\nLines containing only 's' are part ends.\n\nYou need a compatible IoT server to use this feature. Intracting with color picker will stop currently running animation."
+                android:text="STEP Language Instructions:\nLines starting with 'p' indicates animation part. Number near 'p' means repeat count. Set -1 for infinity loop.\nLines starting with 'c' means color commands. First one number (or few numbers separated with '-' or with ',') are led ids. If you want to add multible non-sequential ids, separate it with comma. Combining '-' and ',' in the same command is not currently supported. Remaining numbers are color channels values (RGB).\nLines starting with 't' means pause in milliseconds.\nLines containing only 's' are part ends.\n\nYou need a compatible IoT server to use this feature. Intracting with color picker will stop currently running animation."
                 android:textColor="@color/accent_900"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -335,7 +381,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_start"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:text="Start" />
@@ -343,7 +389,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_stop"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:text="Stop" />
@@ -355,8 +401,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="24dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -364,7 +414,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/field_anim_endpoint"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="52dp"
+                    android:fontFamily="@font/ubuntu"
                     android:hint="Animation endpoint (/animation?data=)"
                     android:singleLine="true"
                     android:text="/animation?data=" />
@@ -375,19 +426,24 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
+                android:gravity="center"
                 android:text="Custom pre-defined animation (Experimental)"
-                android:textSize="16sp"
+                android:textColor="@color/accent_900"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_set_predefined"
                 android:layout_width="90dp"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="24dp"
+                android:background="@drawable/btn_accent_16"
                 android:text="Set"
                 app:layout_constraintBottom_toBottomOf="@+id/textInputLayout3"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -398,8 +454,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
                 app:layout_constraintEnd_toStartOf="@+id/btn_set_predefined"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5">
@@ -407,11 +467,35 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/field_hw_predefined"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="52dp"
+                    android:fontFamily="@font/ubuntu"
                     android:hint="Animation ID"
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/accent_100"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hardware_animation">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/accent_100"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

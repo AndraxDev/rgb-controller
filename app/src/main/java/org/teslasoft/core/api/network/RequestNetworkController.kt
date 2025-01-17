@@ -1,3 +1,19 @@
+/**************************************************************************
+ * Copyright (c) 2017-2025 Teslasoft. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **************************************************************************/
+
 package org.teslasoft.core.api.network
 
 import com.google.gson.Gson
@@ -15,7 +31,6 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
-
 
 open class RequestNetworkController {
     companion object {
@@ -43,17 +58,15 @@ open class RequestNetworkController {
             val builder: OkHttpClient.Builder = OkHttpClient.Builder()
 
             try {
-                val trustManagerFactory =
-                        TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+                val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
                 trustManagerFactory.init(null as KeyStore?)
                 val trustManagers = trustManagerFactory.trustManagers
-                check(!(trustManagers.size != 1 || trustManagers[0] !is X509TrustManager)) {
-                    "Unexpected default trust managers:" + Arrays.toString(
-                            trustManagers
-                    )
-                }
-                val trustManager = trustManagers[0] as X509TrustManager
 
+                check(!(trustManagers.size != 1 || trustManagers[0] !is X509TrustManager)) {
+                    "Unexpected default trust managers:" + trustManagers.contentToString()
+                }
+
+                val trustManager = trustManagers[0] as X509TrustManager
                 val sslContext: SSLContext = SSLContext.getInstance("TLSv1.3")
                 sslContext.init(null, null, SecureRandom())
                 val sslSocketFactory: SSLSocketFactory = sslContext.socketFactory
@@ -62,8 +75,7 @@ open class RequestNetworkController {
                 builder.readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS)
                 builder.writeTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS)
                 builder.hostnameVerifier { _, _ -> true }
-            } catch (ignored: java.lang.Exception) { /* unused */
-            }
+            } catch (_: java.lang.Exception) { /* unused */ }
 
             client = builder.build()
         }
@@ -81,7 +93,7 @@ open class RequestNetworkController {
         val reqBuilder: Request.Builder = Request.Builder()
         val headerBuilder: Headers.Builder = Headers.Builder()
 
-        if (requestNetwork.getHeaders().size > 0) {
+        if (requestNetwork.getHeaders().isNotEmpty()) {
             val headers: HashMap<String, Any> = requestNetwork.getHeaders()
 
             for (header: MutableMap.MutableEntry<String, Any> in headers.entries) {
@@ -153,7 +165,7 @@ open class RequestNetworkController {
                         "unexpected url: $url"
                 )
 
-        if (requestNetwork.getParams().size > 0) {
+        if (requestNetwork.getParams().isNotEmpty()) {
             val params: HashMap<String, Any> = requestNetwork.getParams()
 
             for (param: MutableMap.MutableEntry<String, Any> in params.entries) {
@@ -173,7 +185,7 @@ open class RequestNetworkController {
     ) {
         val formBuilder: FormBody.Builder = FormBody.Builder()
 
-        if (requestNetwork.getParams().size > 0) {
+        if (requestNetwork.getParams().isNotEmpty()) {
             val params: HashMap<String, Any> = requestNetwork.getParams()
 
             for (param: MutableMap.MutableEntry<String, Any> in params.entries) {

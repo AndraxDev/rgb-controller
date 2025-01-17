@@ -7,9 +7,9 @@
     <uses-permission android:name="org.teslasoft.core.permission.ACCESS_CORE"/>
 
     <queries>
-        <intent>
-            <action android:name="android.intent.action.MAIN" />
-        </intent>
+        <package android:name="org.teslasoft.assistant" />
+        <package android:name="org.teslasoft.admin" />
+        <package android:name="com.teslasoft.libraries.support" />
     </queries>
 
     <application

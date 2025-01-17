@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/progressBar"
+        android:id="@+id/loading"
         style="@style/Widget.Material3.CircularProgressIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,4 +18,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:trackCornerRadius="8dp"
         app:trackThickness="8dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
