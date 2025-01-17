@@ -20,7 +20,7 @@
     <string name="field_b">B</string>
     <string name="text_debug">[Debug]</string>
     <string name="text_help">Put here full path with params. &lt;br&gt;Example: &lt;font color="#0084ff"&gt;/script.py?red=&lt;/font&gt;&lt;font color="#990000"&gt;{_r}&lt;/font&gt;&lt;font color="#0084ff"&gt;&amp;green=&lt;/font&gt;&lt;font color="#009900"&gt;{_g}&lt;/font&gt;&lt;font color="#0084ff"&gt;&amp;blue=&lt;/font&gt;&lt;font color="#0c39c2"&gt;{_b}&lt;/font&gt;&lt;/font&gt;, where &lt;font color="#ff9900"&gt;{_color}&lt;/font&gt; is a required placeholder.</string>
-    <string name="text_app_desc">Simple app to control your light IoT devices. This app has been tested on ESP8266.</string>
+    <string name="text_app_desc">Simple app to control your light IoT devices. This app requires compatible IoT Server to run. Features depends on your devices and may not work as well.</string>
     <string name="text_app_dev">Developer: AndraxDev (Teslasoft)</string>
     <string name="text_version">App version:</string>
     <string name="title_about">About app</string>
@@ -28,7 +28,7 @@
     <string name="text_device_name">Device name</string>
     <string name="text_offline">Offline</string>
     <string name="text_edit">Edit</string>
-    <string name="text_add_device">Add a device</string>
+    <string name="text_add_device">Add new device</string>
     <string name="title_devices">Devices</string>
     <string name="text_no_devices_selected">Please select a device from \'Devices\' tab</string>
     <string name="title_no_devices_selected">No devices selected</string>

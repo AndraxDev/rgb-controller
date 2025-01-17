@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -12,6 +12,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
+        android:gravity="center"
         android:text="@string/text_add_device"
         android:textColor="@color/text_title"
         android:textSize="24sp"
@@ -52,10 +53,11 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/field_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:inputType="text"
                 android:backgroundTint="@color/button"
                 android:textColor="@color/accent_900"
+                android:fontFamily="@font/ubuntu"
                 android:textColorHighlight="@color/accent_100"
                 android:textColorHint="@color/accent_500"
                 app:backgroundTint="@color/button" />
@@ -96,10 +98,11 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/field_protocol"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:backgroundTint="@color/button"
                 android:inputType="text"
                 android:textColor="@color/accent_900"
+                android:fontFamily="@font/ubuntu"
                 android:textColorHighlight="@color/accent_100"
                 android:textColorHint="@color/accent_500"
                 app:backgroundTint="@color/button" />
@@ -126,10 +129,11 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/field_hostname"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:backgroundTint="@color/button"
                 android:inputType="text"
                 android:textColor="@color/accent_900"
+                android:fontFamily="@font/ubuntu"
                 android:textColorHighlight="@color/accent_100"
                 android:textColorHint="@color/accent_500"
                 app:backgroundTint="@color/button" />
@@ -155,10 +159,11 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/field_port"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:backgroundTint="@color/button"
                 android:inputType="numberSigned"
                 android:textColor="@color/accent_900"
+                android:fontFamily="@font/ubuntu"
                 android:textColorHighlight="@color/accent_100"
                 android:textColorHint="@color/accent_500"
                 app:backgroundTint="@color/button" />
@@ -198,11 +203,12 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/field_cmd"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:backgroundTint="@color/button"
                 android:drawableEnd="@drawable/ic_help"
                 android:inputType="text"
                 android:textColor="@color/accent_900"
+                android:fontFamily="@font/ubuntu"
                 android:textColorHighlight="@color/accent_100"
                 android:textColorHint="@color/accent_500"
                 app:backgroundTint="@color/button" />
@@ -242,15 +248,15 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/field_getter"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:backgroundTint="@color/button"
                 android:inputType="text"
                 android:textColor="@color/accent_900"
+                android:fontFamily="@font/ubuntu"
                 android:textColorHighlight="@color/accent_100"
                 android:textColorHint="@color/accent_500"
                 app:backgroundTint="@color/button" />
 
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

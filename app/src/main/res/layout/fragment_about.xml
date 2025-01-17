@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ui"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/window_background">
 
     <LinearLayout
         android:id="@+id/action_buttons_group"
-        android:layout_width="360dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:orientation="horizontal"
         android:weightSum="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_used_libs"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_accent"
-            android:onClick="openUsedLibs"
             android:text="@string/btn_used_libs"
             android:textColor="@color/window_background" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_privacy"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_accent"
-            android:onClick="openPrivacy"
             android:text="@string/btn_privacy"
             android:textColor="@color/window_background" />
 
@@ -68,11 +69,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="360dp"
+        android:layout_width="0dp"
         android:layout_height="72dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:gravity="left|center_vertical"
-        android:onClick="sync"
+        android:layout_marginEnd="24dp"
+        android:gravity="start|center_vertical"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +94,7 @@
 
     <TextView
         android:id="@+id/app_desc"
-        android:layout_width="360dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="36dp"
@@ -101,7 +103,7 @@
         android:padding="16dp"
         android:text="@string/text_app_desc"
         android:textColor="@color/accent_900"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_name" />
@@ -132,15 +134,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_dev" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_tos"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="360dp"
+        android:layout_width="0dp"
         android:layout_height="64dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:layout_weight="1"
         android:background="@drawable/btn_accent"
-        android:onClick="openTos"
         android:text="@string/btn_tos"
         android:textColor="@color/window_background"
         app:layout_constraintEnd_toEndOf="parent"
