@@ -500,8 +500,11 @@ class ControllerFragment : Fragment() {
 
             if (isChecked) {
                 disabler.visibility = View.VISIBLE
+                disabler.alpha = 0f
+                disabler.animate().alpha(0.5f).setDuration(200).withEndAction { disabler.alpha = 0.5f }
             } else {
-                disabler.visibility = View.GONE
+                disabler.alpha = 0.5f
+                disabler.animate().alpha(0f).setDuration(200).withEndAction { disabler.visibility = View.GONE }
             }
         }
 
@@ -657,7 +660,9 @@ class ControllerFragment : Fragment() {
         hardwareAnimation.isEnabled = true
         hardwareAnimation.alpha = 1.0f
 
-        disabler.visibility = View.GONE
+        disabler.visibility = View.VISIBLE
+        disabler.alpha = 0.5f
+        disabler.animate().alpha(0f).setDuration(200).withEndAction { disabler.visibility = View.GONE }
     }
 
     private fun disableLeds() {
@@ -676,6 +681,8 @@ class ControllerFragment : Fragment() {
         hardwareAnimation.alpha = 0.5f
 
         disabler.visibility = View.VISIBLE
+        disabler.alpha = 0f
+        disabler.animate().alpha(0.5f).setDuration(200).withEndAction { disabler.alpha = 0.5f }
     }
 
     private fun updateSettings(enabled: String) {
@@ -687,7 +694,7 @@ class ControllerFragment : Fragment() {
     }
 
     private fun enableEdgeToEdge(view: View) {
-        WindowManager.Companion.adjustPaddings(requireActivity(), view, R.id.scrollable, EnumSet.of(WindowManager.Companion.Flags.STATUS_BAR, WindowManager.Companion.Flags.IGNORE_PADDINGS))
+        WindowManager.Companion.adjustPaddings(requireActivity(), view, R.id.ab, EnumSet.of(WindowManager.Companion.Flags.STATUS_BAR, WindowManager.Companion.Flags.IGNORE_PADDINGS))
         WindowManager.Companion.adjustPaddings(requireActivity(), view, R.id.no_selection, EnumSet.of(WindowManager.Companion.Flags.STATUS_BAR, WindowManager.Companion.Flags.IGNORE_PADDINGS))
     }
 }

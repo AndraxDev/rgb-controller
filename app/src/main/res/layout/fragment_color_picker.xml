@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ui"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -53,18 +54,45 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_set_predefined" />
 
-            <TextView
-                android:id="@+id/activity_title"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ab"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="@string/app_name"
-                android:textColor="@color/text_title"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:elevation="6dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/activity_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:text="@string/app_name"
+                    android:textColor="@color/text_title"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/btn_power"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/btn_power" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btn_power"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/desc_power"
+                    android:src="@drawable/ic_power"
+                    app:backgroundTint="@color/light_green"
+                    app:elevation="6dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/black" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/colors_fields_group"
@@ -180,12 +208,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="36dp"
-                android:layout_marginTop="48dp"
                 android:layout_marginRight="36dp"
                 app:enableAlpha="false"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_title" />
+                app:layout_constraintTop_toBottomOf="@+id/ab" />
 
             <LinearLayout
                 android:id="@+id/action_buttons_group"
@@ -270,30 +297,20 @@
                 android:id="@+id/disabler"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:alpha="0.5"
+                android:alpha="0.6"
                 android:background="@color/window_background"
+                android:clickable="true"
+                android:contentDescription="Disabled"
+                android:elevation="3dp"
                 android:orientation="vertical"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible">
 
             </LinearLayout>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_power"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
-                android:clickable="true"
-                android:contentDescription="@string/desc_power"
-                android:src="@drawable/ic_power"
-                app:backgroundTint="@color/light_green"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/black" />
 
             <TextView
                 android:id="@+id/textView"

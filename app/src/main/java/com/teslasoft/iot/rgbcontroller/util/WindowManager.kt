@@ -17,6 +17,9 @@
 package com.teslasoft.iot.rgbcontroller.util
 
 import android.app.Activity
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import java.util.EnumSet
@@ -31,10 +34,24 @@ class WindowManager {
         }
 
         fun adjustPaddings(activity: Activity, rootView: View, res: Int, flags: EnumSet<Flags>, customPaddingTop: Int = 0, customPaddingBottom: Int = 0) {
-            checkNotNull (activity.window.decorView.rootWindowInsets) {
-                "[Impossible or illegal scenario reached] This is a fucking Exception that appears only when some bugs are flying nearby. You might want to place the call of this method inside onAttachedToWindow or window inset controller ready listener."
+            if (activity.window.decorView.rootWindowInsets == null) {
+                Log.w("WindowManager", "[WARNING] You might want to place the call of this method inside onAttachedToWindow or window inset controller ready listener.")
+                Handler(Looper.getMainLooper()).postDelayed({
+                    adjustPaddingsDelayed(activity, rootView, res, flags, customPaddingTop, customPaddingBottom)
+                }, 100)
+            } else {
+                adjustPaddingsDelayed(
+                    activity,
+                    rootView,
+                    res,
+                    flags,
+                    customPaddingTop,
+                    customPaddingBottom
+                )
             }
+        }
 
+        private fun adjustPaddingsDelayed(activity: Activity, rootView: View, res: Int, flags: EnumSet<Flags>, customPaddingTop: Int = 0, customPaddingBottom: Int = 0) {
             val view = rootView.findViewById<View?>(res)
 
             checkNotNull(view) {

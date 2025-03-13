@@ -32,9 +32,9 @@ import com.teslasoft.iot.rgbcontroller.fragments.tabs.DeviceListFragment
 class MainActivity : FragmentActivity() {
     private lateinit var containerFragment: ConstraintLayout
     private lateinit var navigator: BottomNavigationView
-    lateinit var deviceListFragment: DeviceListFragment
-    lateinit var controllerFragment: ControllerFragment
-    lateinit var aboutFragment: AboutFragment
+    private var deviceListFragment: DeviceListFragment? = null
+    private var controllerFragment: ControllerFragment? = null
+    private var aboutFragment: AboutFragment? = null
 
     private var selectedTab = 0
 
@@ -48,13 +48,17 @@ class MainActivity : FragmentActivity() {
             override fun handleOnBackPressed() {
                 if (selectedTab != 0) {
                     selectedTab = 0
-                    loadFragment(deviceListFragment)
+                    loadFragment(deviceListFragment ?: return)
                     navigator.selectedItemId = R.id.page_devices
                 } else {
                     finish()
                 }
             }
         })
+
+        if (savedInstanceState !== null) {
+            init()
+        }
     }
 
     private fun initUI() {
@@ -65,11 +69,20 @@ class MainActivity : FragmentActivity() {
         window.setBackgroundDrawable(ColorDrawable(SurfaceColors.SURFACE_0.getColor(this)))
     }
 
+    private fun init() {
+        initUI()
+        initNavigator()
+        deviceListFragment = DeviceListFragment()
+        controllerFragment = ControllerFragment()
+        aboutFragment = AboutFragment()
+        loadFragmentFromTab(selectedTab)
+    }
+
     private fun loadFragmentFromTab(tab: Int) {
         when (tab) {
-            0 -> loadFragment(deviceListFragment)
-            1 -> loadFragment(controllerFragment)
-            2 -> loadFragment(aboutFragment)
+            0 -> loadFragment(deviceListFragment ?: return)
+            1 -> loadFragment(controllerFragment ?: return)
+            2 -> loadFragment(aboutFragment ?: return)
         }
     }
 
@@ -81,17 +94,17 @@ class MainActivity : FragmentActivity() {
         navigator.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.page_devices -> {
-                    loadFragment(deviceListFragment)
+                    loadFragment(deviceListFragment ?: return@setOnItemSelectedListener false)
                     selectedTab = 0
                     true
                 }
                 R.id.page_controller -> {
-                    loadFragment(controllerFragment)
+                    loadFragment(controllerFragment ?: return@setOnItemSelectedListener false)
                     selectedTab = 1
                     true
                 }
                 R.id.page_settings -> {
-                    loadFragment(aboutFragment)
+                    loadFragment(aboutFragment ?: return@setOnItemSelectedListener false)
                     selectedTab = 2
                     true
                 }
@@ -113,18 +126,12 @@ class MainActivity : FragmentActivity() {
 
     fun openController() {
         selectedTab = 1
-        loadFragment(controllerFragment)
+        loadFragment(controllerFragment ?: return)
         navigator.selectedItemId = R.id.page_controller
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-
-        initUI()
-        initNavigator()
-        deviceListFragment = DeviceListFragment()
-        controllerFragment = ControllerFragment()
-        aboutFragment = AboutFragment()
-        loadFragmentFromTab(selectedTab)
+        init()
     }
 }
