@@ -44,6 +44,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.teslasoft.iot.rgbcontroller.MainActivity
 import com.teslasoft.iot.rgbcontroller.data.Color
 import com.teslasoft.iot.rgbcontroller.R
 import com.teslasoft.iot.rgbcontroller.util.StateManager
@@ -128,7 +129,7 @@ class ControllerFragment : Fragment() {
     }
 
     private val animationRequestListener = object : RequestNetwork.RequestListener {
-        override fun onResponse(tag: String, response: String) { /* ignored */ }
+        override fun onResponse(tag: String, message: String) { /* ignored */ }
 
         override fun onErrorResponse(tag: String, message: String) {
             MaterialAlertDialogBuilder(context)
@@ -140,7 +141,7 @@ class ControllerFragment : Fragment() {
     }
 
     private val apiListener = object : RequestNetwork.RequestListener {
-        override fun onResponse(tag: String, response: String) {
+        override fun onResponse(tag: String, message: String) {
             loadingScreen.visibility = View.GONE
             isLoading = false
         }
@@ -154,20 +155,14 @@ class ControllerFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = requireActivity()
-        deviceId = StateManager.Companion.getSelectedDeviceId() ?: "null"
+        deviceId = StateManager.getSelectedDeviceId() ?: "null"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_color_picker, container, false)
     }
 
-    private val mGetContent: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            readFileFromUri(uri)
-        }
-    }
-
-    private fun readFileFromUri(uri: Uri) {
+    fun readFileFromUri(uri: Uri) {
         try {
             requireActivity().contentResolver.openInputStream(uri)?.use { inputStream ->
                 val size = inputStream.available()
@@ -250,7 +245,7 @@ class ControllerFragment : Fragment() {
     }
 
     private fun launchFileIntent() {
-        mGetContent.launch("*/*")
+        (requireActivity() as MainActivity).mGetContent.launch("*/*")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

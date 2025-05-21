@@ -17,9 +17,12 @@
 package com.teslasoft.iot.rgbcontroller
 
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -37,6 +40,13 @@ class MainActivity : FragmentActivity() {
     private var aboutFragment: AboutFragment? = null
 
     private var selectedTab = 0
+
+    public val mGetContent: ActivityResultLauncher<String> = registerForActivityResult(
+        ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            controllerFragment?.readFileFromUri(uri)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
