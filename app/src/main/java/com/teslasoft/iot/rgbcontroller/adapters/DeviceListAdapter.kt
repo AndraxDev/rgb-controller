@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2022-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2022-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ class DeviceListAdapter(
 
             val availabilityApiListener = object : RequestNetwork.RequestListener {
                 @SuppressLint("SetTextI18n")
-                override fun onResponse(tag: String, response: String) {
+                override fun onResponse(tag: String, message: String) {
                     status.text = "Online"
                     status.setTextColor(context.getColor(R.color.success))
                 }

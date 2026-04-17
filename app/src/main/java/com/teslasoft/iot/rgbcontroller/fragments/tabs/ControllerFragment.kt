@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2022-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2022-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,6 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -102,11 +100,11 @@ class ControllerFragment : Fragment() {
     private lateinit var syncProvider: RequestNetwork
 
     private val syncListener = object : RequestNetwork.RequestListener {
-        override fun onResponse(tag: String, response: String) {
+        override fun onResponse(tag: String, message: String) {
             val gson = Gson()
             try {
                 val type: Type = TypeToken.get(Color::class.java).type
-                val sr: Color = gson.fromJson(response, type)
+                val sr: Color = gson.fromJson(message, type)
                 val red = sr.red
                 val green = sr.green
                 val blue = sr.blue
@@ -202,9 +200,9 @@ class ControllerFragment : Fragment() {
                 }
                 "c" -> {
                     try {
-                        data.drop(2).forEachIndexed { i, value ->
+                        data.drop(2).forEachIndexed { _, value ->
                             val intValue = value.toInt()
-                            if (intValue < 0 || intValue > 255) {
+                            if (intValue !in 0..255) {
                                 showError("Syntax error: Invalid value at ${lineNumber + 1}:${2 + value.length * 3}: Expected a value between 0 and 255, but got $value.")
                                 return false
                             }
@@ -295,7 +293,7 @@ class ControllerFragment : Fragment() {
         btnOpenFile.setOnClickListener { launchFileIntent() }
         btnSetPredefined.setOnClickListener {
             api.startRequestNetwork(
-                    RequestNetworkController.Companion.GET,
+                    RequestNetworkController.GET,
                     "$protocol://$hostname:$port${getCmd(cmd, null, null, null ,fieldHwPredefined.text.toString())}",
                     "A",
                     apiListener
@@ -305,7 +303,7 @@ class ControllerFragment : Fragment() {
         btnStart.setOnClickListener {
             val base64animation = Base64.getEncoder().encodeToString(fieldAnimation.text.toString().toByteArray())
             api.startRequestNetwork(
-                    RequestNetworkController.Companion.GET,
+                    RequestNetworkController.GET,
                     "$protocol://$hostname:$port$animationCmd$base64animation",
                     "A",
                     animationRequestListener
@@ -314,7 +312,7 @@ class ControllerFragment : Fragment() {
 
         btnStop.setOnClickListener {
             api.startRequestNetwork(
-                    RequestNetworkController.Companion.GET,
+                    RequestNetworkController.GET,
                     "$protocol://$hostname:$port$animationCmd",
                     "A",
                     animationRequestListener
@@ -325,8 +323,8 @@ class ControllerFragment : Fragment() {
     }
 
     fun preInit() {
-        deviceId = StateManager.Companion.getSelectedDeviceId() ?: "null"
-        if (deviceId.toString() == "null" || deviceId.toString() == "" || deviceId.toString() == "[null]") {
+        deviceId = StateManager.getSelectedDeviceId() ?: "null"
+        if (deviceId == "null" || deviceId == "" || deviceId == "[null]") {
             noSelected.visibility = View.VISIBLE
             content.visibility = View.GONE
         } else {
@@ -378,7 +376,7 @@ class ControllerFragment : Fragment() {
             colorPicker.setInitialColor(c.toInt())
 
             syncProvider.startRequestNetwork(
-                    RequestNetworkController.Companion.GET,
+                    RequestNetworkController.GET,
                     "$protocol://$hostname:$port$getter",
                     "A",
                     syncListener
@@ -472,7 +470,7 @@ class ControllerFragment : Fragment() {
 
                 if (isPoweredOn) {
                     api.startRequestNetwork(
-                            RequestNetworkController.Companion.GET,
+                            RequestNetworkController.GET,
                             "$protocol://$hostname:$port${getCmd(cmd, null, null, null, null)}",
                             "A",
                             apiListener
@@ -486,7 +484,7 @@ class ControllerFragment : Fragment() {
 
         hardwareAnimation.setOnCheckedChangeListener { _, isChecked ->
             api.startRequestNetwork(
-                    RequestNetworkController.Companion.GET,
+                    RequestNetworkController.GET,
                     "$protocol://$hostname:$port${getCmd(cmd, null, null, null, null)}",
                     "A",
                     apiListener
@@ -526,7 +524,7 @@ class ControllerFragment : Fragment() {
             formError = errorRed || errorGreen || errorBlue
             if (!formError) {
                 try {
-                    val color = String.Companion.format(
+                    val color = String.format(
                             Locale.US,
                             "FF%02X%02X%02X",
                             Integer.parseInt(fieldRed.text.toString().trim()),
@@ -537,7 +535,7 @@ class ControllerFragment : Fragment() {
                     colorPicker.setInitialColor(c.toInt())
 
                     api.startRequestNetwork(
-                            RequestNetworkController.Companion.GET,
+                            RequestNetworkController.GET,
                             "$protocol://$hostname:$port${getCmd(cmd, null, null, null, null)}",
                             "A",
                             apiListener
@@ -571,14 +569,14 @@ class ControllerFragment : Fragment() {
         fieldBlue.setText(intToColor(tB).toString())
 
         api.startRequestNetwork(
-                RequestNetworkController.Companion.GET,
+                RequestNetworkController.GET,
                 "$protocol://$hostname:$port${getCmd(cmd, null, null, null, null)}",
                 "A",
                 apiListener
         )
         isLoading = true
 
-        val color = String.Companion.format(
+        val color = String.format(
                 Locale.US,
                 "FF%02X%02X%02X",
                 Integer.parseInt(fieldRed.text.toString().trim()),
@@ -619,7 +617,7 @@ class ControllerFragment : Fragment() {
             disableLeds()
             if (!formError) {
                 api.startRequestNetwork(
-                    RequestNetworkController.Companion.GET,
+                    RequestNetworkController.GET,
                     "$protocol://$hostname:$port${getCmd(cmd, "0", "0", "0", null)}",
                     "A",
                     apiListener
@@ -631,7 +629,7 @@ class ControllerFragment : Fragment() {
             enableLeds()
             if (!formError) {
                 api.startRequestNetwork(
-                    RequestNetworkController.Companion.GET,
+                    RequestNetworkController.GET,
                     "$protocol://$hostname:$port${getCmd(cmd, null, null, null, null)}",
                     "A",
                     apiListener
@@ -689,7 +687,7 @@ class ControllerFragment : Fragment() {
     }
 
     private fun enableEdgeToEdge(view: View) {
-        WindowManager.Companion.adjustPaddings(requireActivity(), view, R.id.ab, EnumSet.of(WindowManager.Companion.Flags.STATUS_BAR, WindowManager.Companion.Flags.IGNORE_PADDINGS))
-        WindowManager.Companion.adjustPaddings(requireActivity(), view, R.id.no_selection, EnumSet.of(WindowManager.Companion.Flags.STATUS_BAR, WindowManager.Companion.Flags.IGNORE_PADDINGS))
+        WindowManager.adjustPaddings(requireActivity(), view, R.id.ab, EnumSet.of(WindowManager.Companion.Flags.STATUS_BAR, WindowManager.Companion.Flags.IGNORE_PADDINGS))
+        WindowManager.adjustPaddings(requireActivity(), view, R.id.no_selection, EnumSet.of(WindowManager.Companion.Flags.STATUS_BAR, WindowManager.Companion.Flags.IGNORE_PADDINGS))
     }
 }

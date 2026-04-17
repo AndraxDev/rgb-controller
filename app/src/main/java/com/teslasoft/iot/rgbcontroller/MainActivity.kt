@@ -16,7 +16,7 @@
 
 package com.teslasoft.iot.rgbcontroller
 
-import android.graphics.drawable.ColorDrawable
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
@@ -31,6 +31,8 @@ import com.google.android.material.elevation.SurfaceColors
 import com.teslasoft.iot.rgbcontroller.fragments.tabs.AboutFragment
 import com.teslasoft.iot.rgbcontroller.fragments.tabs.ControllerFragment
 import com.teslasoft.iot.rgbcontroller.fragments.tabs.DeviceListFragment
+import androidx.core.graphics.drawable.toDrawable
+import com.teslasoft.iot.rgbcontroller.permission.LANPermissionActivity
 
 class MainActivity : FragmentActivity() {
     private lateinit var containerFragment: ConstraintLayout
@@ -75,8 +77,7 @@ class MainActivity : FragmentActivity() {
         containerFragment = findViewById(R.id.fragment_container)
         navigator = findViewById(R.id.bottom_navigation)
         navigator.setBackgroundColor(SurfaceColors.SURFACE_3.getColor(this))
-
-        window.setBackgroundDrawable(ColorDrawable(SurfaceColors.SURFACE_0.getColor(this)))
+        window.setBackgroundDrawable(SurfaceColors.SURFACE_0.getColor(this).toDrawable())
     }
 
     private fun init() {
@@ -86,6 +87,8 @@ class MainActivity : FragmentActivity() {
         controllerFragment = ControllerFragment()
         aboutFragment = AboutFragment()
         loadFragmentFromTab(selectedTab)
+
+        startActivity(Intent(this, LANPermissionActivity::class.java))
     }
 
     private fun loadFragmentFromTab(tab: Int) {

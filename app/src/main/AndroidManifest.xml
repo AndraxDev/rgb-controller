@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
     <uses-permission android:name="org.teslasoft.core.permission.AUTHENTICATE_ACCOUNTS"/>
     <uses-permission android:name="org.teslasoft.core.permission.ACCESS_CORE"/>
 
@@ -37,5 +38,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".permission.LANPermissionActivity"
+            android:theme="@style/Theme.Transparent"
+            android:exported="false" />
     </application>
 </manifest>

@@ -1,17 +1,15 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
 }
 
 android {
-     compileSdk 36
-
+    compileSdk = 37
     defaultConfig {
         applicationId "com.teslasoft.iot.rgbcontroller"
         minSdk 31
-        targetSdk 36
-        versionCode 3200
-        versionName "3.2.0"
+        targetSdk 37
+        versionCode 3210
+        versionName "3.2.1"
     }
 
     buildTypes {
@@ -37,24 +35,20 @@ android {
         targetCompatibility JavaVersion.VERSION_21
     }
 
-    kotlinOptions {
-        jvmTarget = "21"
-    }
-
     namespace 'com.teslasoft.iot.rgbcontroller'
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.14.0-alpha01'
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.14.0-beta01'
+    implementation 'com.github.bumptech.glide:glide:5.0.5'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'com.google.code.gson:gson:2.13.1'
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
+    implementation 'com.google.code.gson:gson:2.13.2'
+    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation 'com.github.duanhong169:colorpicker:1.1.6'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'com.github.svenoaks:MasterSwitchPreference:0.9.1'
-    implementation 'org.teslasoft.core.auth:teslasoft-id:1.5.0'
+    implementation 'org.teslasoft.core.auth:teslasoft-id:1.5.2'
 }
 
 configurations {

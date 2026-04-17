@@ -16,19 +16,22 @@
 
 package com.teslasoft.iot.rgbcontroller.permission
 
+import android.Manifest
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 
-@Deprecated("The Android 16 Beta 3 changes have been discarded. Use LANPermissionActivity instead.")
-class NearbyPermissionActivity : AbstractPermissionActivity() {
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+class LANPermissionActivity : AbstractPermissionActivity() {
+    // This permission is automatically granted on android 16 and below (API 36).
+    // However, android.permission.INTERNET is still required to access LAN on older android versions.
+    @RequiresApi(Build.VERSION_CODES.CINNAMON_BUN)
     override fun onCreate(savedInstanceState: Bundle?) {
         context = this
         denyMessage = "You denied nearby devices permission. All local devices will report status as offline until you allow app to discover local network devices."
-        requestTitle = "Allow nearby devices permission?"
-        requestMessage = "Starting from Android 16 Beta 3, RGB Controller requires nearby devices permission to connect to the local smart devices. If you deny this permission, apps core functionality will be limited only to the remote devices. Allow nearby access?"
-        permissionCode = android.Manifest.permission.NEARBY_WIFI_DEVICES
+        requestTitle = "Allow local network permission?"
+        requestMessage = "Starting from Android 17, RGB Controller requires LAN permission to connect to the local smart devices. If you deny this permission, apps core functionality will be limited only to the remote devices. Allow LAN access?"
+        permissionCode = Manifest.permission.ACCESS_LOCAL_NETWORK
+        minSDKVersion = Build.VERSION_CODES.CINNAMON_BUN
         super.onCreate(savedInstanceState)
     }
 }
