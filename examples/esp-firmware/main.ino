@@ -1,7 +1,7 @@
 /**************************************************************************
- * ESP Crystal lamp firmware
+ * ESP Crystal lamp firmware version 2.0
 
- * Copyright (c) 2022-2024 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2022-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@
 int intToColor(int i);
 
 // Replace with your network credentials
-const char* ssid     = "SSID";
-const char* password = "PASSWORD";
+const char* ssid     = "<SSID>";
+const char* password = "<PASSWORD>";
 
 // Set web server port number to 80
 WiFiServer server(80);
@@ -46,10 +46,6 @@ String header;
 const int redPin = 14;     // 13 corresponds to GPIO13
 const int greenPin = 12;   // 12 corresponds to GPIO12
 const int bluePin = 13;    // 14 corresponds to GPIO14
-
-const int redPin2 = 5;     // 13 corresponds to GPIO13
-const int greenPin2 = 4;   // 12 corresponds to GPIO12
-const int bluePin2 = 0;    // 14 corresponds to GPIO14
 
 int rr = 0;
 int gg = 1024;
@@ -78,39 +74,32 @@ void setup() {
   pinMode(redPin, OUTPUT);
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);
-  pinMode(redPin2, OUTPUT);
-  pinMode(greenPin2, OUTPUT);
-  pinMode(bluePin2, OUTPUT);
 
   // configure LED PWM resolution/range and set pins to LOW
   analogWriteRange(resolution);
   analogWrite(redPin, 0);
   analogWrite(greenPin, 0);
   analogWrite(bluePin, 0);
-  analogWrite(redPin2, 0);
-  analogWrite(greenPin2, 0);
-  analogWrite(bluePin2, 0);
 
   // Connect to Wi-Fi network with SSID and password
   Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    // delay(300);
-    // analogWrite(greenPin, 255);
-    // analogWrite(greenPin2, 255);
     delay(300);
-    // analogWrite(greenPin, 0);
-    // analogWrite(greenPin2, 0);
+    analogWrite(redPin, 0xFF);
+    analogWrite(greenPin, 0xFF);
+    analogWrite(bluePin, 0xFF);
+    delay(300);
+    analogWrite(redPin, 0);
+    analogWrite(greenPin, 0);
+    analogWrite(bluePin, 0);
     Serial.print(".");
   }
 
-  analogWrite(redPin, 255);
-  analogWrite(greenPin, 0);
-  analogWrite(bluePin, 33);
-  analogWrite(redPin2, 255);
-  analogWrite(greenPin2, 0);
-  analogWrite(bluePin2, 33);
+  analogWrite(redPin, 0xFF);
+  analogWrite(greenPin, 0xFF);
+  analogWrite(bluePin, 0xFF);
 
   // Print local IP address and start web server
   Serial.println("");
@@ -148,16 +137,49 @@ void loop() {
             client.println();
 
             // Display the HTML web page
-            client.println("<!DOCTYPE html><html>");
-            client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-            client.println("<link rel=\"icon\" href=\"data:,\">");
-            client.println("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\">");
-            client.println("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js\"></script>");
-            client.println("</head><body><div class=\"container\"><div class=\"row\"><h1>ESP Color Picker</h1></div>");
-            client.println("<a class=\"btn btn-primary btn-lg\" href=\"#\" id=\"change_color\" role=\"button\">Change Color</a> ");
-            client.println("<input class=\"jscolor {onFineChange:'update(this)'}\" id=\"rgb\"></div>");
-            client.println("<script>function update(picker) {document.getElementById('rgb').innerHTML = Math.round(picker.rgb[0]) + ', ' +  Math.round(picker.rgb[1]) + ', ' + Math.round(picker.rgb[2]);");
-            client.println("document.getElementById(\"change_color\").href=\"?r\" + Math.round(picker.rgb[0]) + \"g\" +  Math.round(picker.rgb[1]) + \"b\" + Math.round(picker.rgb[2]) + \"&\";}</script></body></html>");
+            client.println("<!DOCTYPE html>");
+            client.println("<html lang='en'>");
+            client.println("<head>");
+            client.println("<meta name='viewport' content='width=device-width, initial-scale=1'>");
+            client.println("<script src='https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js'></script>");
+            client.println("<title>Crystal Lamp</title>");
+            client.println("<style>button {flex-grow:1;padding:12px 16px;outline:0;font-size:16px;border:none;border-radius:999pc;background-color:#424242;color:#fff;transition:.3s;cursor:pointer;-webkit-tap-highlight-color:transparent;}button:hover{background-color:#fff;color:#000000;transition:.3s;}a{text-decoration:none;transition:.3s;color:#3492eb;}a:hover{color:#ffffff;transition:.3s;}</style>");
+            client.println("</head>");
+            client.println("<body style='font-family:sans-serif;padding:0;margin:0;overflow:hidden;user-select:none;color-scheme:dark;background-color:#121212;'>");
+            client.println("<div style='display:flex;flex-direction:column;align-items:center;justify-content:center;height:100lvh;max-width:360px;margin:auto;overflow:hidden;'>");
+            client.println("<div style='background-color:#323232;padding:20px;width:calc(100% - 48px);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:36px;'>");
+            client.println("<h1 style='font-size:24px;width:100%;text-align:center;margin:0;color:#cecece;'>Crystal Lamp</h1>");
+            client.println("<div style='width:100%;padding-top:20px;'>");
+            client.println("<input style='width:calc(100% - 32px);padding:12px 16px;font-size:16px;border:none;outline:none;border-radius:999pc;' class='jscolor {onFineChange:`update(this)`}' id='rgb'>");
+            client.println("</div>");
+            client.println("<div style='width:100%;padding-top:20px;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:20px;'>");
+            client.println("<button onclick='javascript:setColor(onUrl)'>On</button>");
+            client.println("<button onclick='javascript:setColor(offUrl)'>Off</button>");
+            client.println("<button onclick='javascript:setColor(animationUrl)'>Animate</button>");
+            client.println("</div>");
+            client.println("<p style='margin-bottom:0;margin-top:20px;font-size:14px;color:#cecece;'>Firmware version: 2.0</p>");
+            client.println("<p style='margin-bottom:0;margin-top:6px;font-size:14px;color:#cecece;'>(C) 2022-2026 <a href='https://andrax.dev/' target='_blank'>AndraxDev</a></p>");
+            client.println("</div>");
+            client.println("</div>");
+            client.println("<script>");
+            client.println("const hostname = window.location.hostname;");
+            client.println("const port = window.location.port;");
+            client.println("const baseUrl = 'http://' + hostname + ':' + port;");
+            client.println("const offUrl = baseUrl + '?r0g0b0a0&';");
+            client.println("const onUrl = baseUrl + '?r255g255b255a0&';");
+            client.println("const animationUrl = baseUrl + '?r255g0b0a1&';");
+            client.println("function update(picker) {");
+            client.println("document.getElementById('rgb').innerHTML = Math.round(picker.rgb[0]) + ', ' +  Math.round(picker.rgb[1]) + ', ' + Math.round(picker.rgb[2]);");
+            client.println("let l = '?r' + Math.round(picker.rgb[0]) + 'g' +  Math.round(picker.rgb[1]) + 'b' + Math.round(picker.rgb[2]) + '&';");
+            client.println("setColor(baseUrl + l);");
+            client.println("}");
+            client.println("function setColor(url) {");
+            client.println("fetch(url).then(() => {}).catch(() => {});");
+            client.println("}");
+            client.println("</script>");
+            client.println("</body>");
+            client.println("</html>");
+
             // The HTTP response ends with another blank line
             client.println();
 
@@ -185,8 +207,10 @@ void loop() {
         }
       }
     }
+
     // Clear the header variable
     header = "";
+
     // Close the connection
     client.stop();
     Serial.println("Client disconnected.");
@@ -200,39 +224,21 @@ void loop() {
 
     delay(20);
 
-    // analogWrite(redPin, 255 - intToColor(rr));
-    // analogWrite(greenPin, 255 - intToColor(gg));
-    // analogWrite(bluePin, 255 - intToColor(bb));
-
-    // Normal version
-    analogWrite(redPin, intToColor(rr));
-    analogWrite(greenPin, intToColor(gg));
-    analogWrite(bluePin, intToColor(bb));
-    analogWrite(redPin2, intToColor(rr));
-    analogWrite(greenPin2, intToColor(gg));
-    analogWrite(bluePin2, intToColor(bb));
+    analogWrite(redPin, 0xFF - intToColor(rr));
+    analogWrite(greenPin, 0xFF - intToColor(gg));
+    analogWrite(bluePin, 0xFF - intToColor(bb));
 
     rr++;
     gg++;
     bb++;
   } else {
-    // analogWrite(redPin, 255 - redString.toInt());
-    // analogWrite(greenPin, 255 - greenString.toInt());
-    // analogWrite(bluePin, 255 - blueString.toInt());
-
-    // Normal version
-    // if (gR != redString.toInt() || gG != greenString.toInt() || gB != blueString.toInt()) {
-      analogWrite(redPin, redString.toInt());
-      analogWrite(greenPin, greenString.toInt());
-      analogWrite(bluePin, blueString.toInt());
-      analogWrite(redPin2, redString.toInt());
-      analogWrite(greenPin2, greenString.toInt());
-      analogWrite(bluePin2, blueString.toInt());
-    //}
-
     gR = redString.toInt();
     gG = greenString.toInt();
     gB = blueString.toInt();
+
+    analogWrite(redPin, 0xFF - gR);
+    analogWrite(greenPin, 0xFF - gG);
+    analogWrite(bluePin, 0xFF - gB);
   }
 
   delay(20);

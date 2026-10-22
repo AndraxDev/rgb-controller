@@ -1,0 +1,29 @@
+
+ã
+
+;
+android*http://schemas.android.com/apk/res/androidBmenu*«
+¢item"u
+*http://schemas.android.com/apk/res/androidtitle@string/title_devices"(áƒ„2 
+üÄøstring/title_devices0"J
+*http://schemas.android.com/apk/res/androidenabledtrue"(€„2:@"l
+*http://schemas.android.com/apk/res/androidicon@drawable/ic_list"(‚€„2
+£œødrawable/ic_list0"i
+*http://schemas.android.com/apk/res/androidid@+id/page_devices"(Ğ„2
+¼ƒ¤øid/page_devices00*Á
+¸item"y
+*http://schemas.android.com/apk/res/androidtitle@string/text_controller"(áƒ„2"
+ ñÄøstring/text_controller0"J
+*http://schemas.android.com/apk/res/androidenabledtrue"(€„2:@"x
+*http://schemas.android.com/apk/res/androidicon@drawable/ic_controller"(‚€„2"
+ œœødrawable/ic_controller0"o
+*http://schemas.android.com/apk/res/androidid@+id/page_controller"(Ğ„2
+»ƒ¤øid/page_controller02*«
+¢item"q
+*http://schemas.android.com/apk/res/androidtitle@string/title_about"(áƒ„2
+ûÄøstring/title_about0"J
+*http://schemas.android.com/apk/res/androidenabledtrue"(€„2:@"n
+*http://schemas.android.com/apk/res/androidicon@drawable/ic_about"(‚€„2
+œødrawable/ic_about0"k
+*http://schemas.android.com/apk/res/androidid@+id/page_settings"(Ğ„2
+½ƒ¤øid/page_settings0.B

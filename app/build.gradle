@@ -8,8 +8,8 @@ android {
         applicationId "com.teslasoft.iot.rgbcontroller"
         minSdk 31
         targetSdk 37
-        versionCode 3210
-        versionName "3.2.1"
+        versionCode 3230
+        versionName "3.2.3"
     }
 
     buildTypes {
@@ -39,16 +39,16 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.14.0-beta01'
-    implementation 'com.github.bumptech.glide:glide:5.0.5'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'com.google.code.gson:gson:2.13.2'
-    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'com.google.android.material:material:1.14.0'
+    implementation 'com.github.bumptech.glide:glide:5.0.9'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
+    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.5.1'
     implementation 'com.github.duanhong169:colorpicker:1.1.6'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'com.github.svenoaks:MasterSwitchPreference:0.9.1'
-    implementation 'org.teslasoft.core.auth:teslasoft-id:1.5.2'
+    implementation 'org.teslasoft.core.auth:teslasoft-id:1.5.3'
 }
 
 configurations {
